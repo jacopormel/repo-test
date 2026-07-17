@@ -3,6 +3,8 @@ import { GovernmentAgency } from '@src/modules/government-agency/domain/governme
 import { GovernmentAgencyMappingError } from '../../error/government-agency-mapping.error';
 import { GovernmentAgencyNotFoundError } from '../../error/government-agency-not-found.error';
 
+export const GOVERNMENT_AGENCY_REPOSITORY_PORT = Symbol('GOVERNMENT_AGENCY_REPOSITORY_PORT');
+
 export interface GovernmentAgencyRepositoryPort {
   save(domain: GovernmentAgency): Promise<Result<Id, GovernmentAgencyMappingError>>;
 
