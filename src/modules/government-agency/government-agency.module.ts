@@ -3,6 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateGovernmentAgencyUsecase } from './application/command/create-government-agency/create-government-agency.usecase';
 import { DeleteGovernmentAgencyUsecase } from './application/command/delete-government-agency/delete-government-agency.usecase';
 import { UpdateGovernmentAgencyUsecase } from './application/command/update-government-agency/update-government-agency.usecase';
+import {
+  GOVERNMENT_AGENCY_QUERY_PORT,
+  GovernmentAgencyQueryPort,
+} from './application/port/out/government-agency-query.port';
+import {
+  GOVERNMENT_AGENCY_REPOSITORY_PORT,
+  GovernmentAgencyRepositoryPort,
+} from './application/port/out/government-agency-repository.port';
 import { GetAllGovernmentAgenciesUsecase } from './application/query/get-all-government-agencies/get-all-government-agencies.usecase';
 import { CreateGovernmentAgencyController } from './infrastructure/in/create-government-agency/create-government-agency.controller';
 import { DeleteGovernmentAgencyController } from './infrastructure/in/delete-government-agency/delete-government-agency.controller';
@@ -21,31 +29,37 @@ import { GovernmentAgencyRepository } from './infrastructure/out/government-agen
     DeleteGovernmentAgencyController,
   ],
   providers: [
-    GovernmentAgencyQueryRepository,
-    GovernmentAgencyRepository,
+    {
+      provide: GOVERNMENT_AGENCY_QUERY_PORT,
+      useClass: GovernmentAgencyQueryRepository,
+    },
+    {
+      provide: GOVERNMENT_AGENCY_REPOSITORY_PORT,
+      useClass: GovernmentAgencyRepository,
+    },
     {
       provide: GetAllGovernmentAgenciesUsecase,
-      useFactory: (queryRepository: GovernmentAgencyQueryRepository) =>
-        new GetAllGovernmentAgenciesUsecase(queryRepository),
-      inject: [GovernmentAgencyQueryRepository],
+      useFactory: (queryPort: GovernmentAgencyQueryPort) =>
+        new GetAllGovernmentAgenciesUsecase(queryPort),
+      inject: [GOVERNMENT_AGENCY_QUERY_PORT],
     },
     {
       provide: CreateGovernmentAgencyUsecase,
-      useFactory: (repository: GovernmentAgencyRepository) =>
-        new CreateGovernmentAgencyUsecase(repository),
-      inject: [GovernmentAgencyRepository],
+      useFactory: (repositoryPort: GovernmentAgencyRepositoryPort) =>
+        new CreateGovernmentAgencyUsecase(repositoryPort),
+      inject: [GOVERNMENT_AGENCY_REPOSITORY_PORT],
     },
     {
       provide: UpdateGovernmentAgencyUsecase,
-      useFactory: (repository: GovernmentAgencyRepository) =>
-        new UpdateGovernmentAgencyUsecase(repository),
-      inject: [GovernmentAgencyRepository],
+      useFactory: (repositoryPort: GovernmentAgencyRepositoryPort) =>
+        new UpdateGovernmentAgencyUsecase(repositoryPort),
+      inject: [GOVERNMENT_AGENCY_REPOSITORY_PORT],
     },
     {
       provide: DeleteGovernmentAgencyUsecase,
-      useFactory: (repository: GovernmentAgencyRepository) =>
-        new DeleteGovernmentAgencyUsecase(repository),
-      inject: [GovernmentAgencyRepository],
+      useFactory: (repositoryPort: GovernmentAgencyRepositoryPort) =>
+        new DeleteGovernmentAgencyUsecase(repositoryPort),
+      inject: [GOVERNMENT_AGENCY_REPOSITORY_PORT],
     },
   ],
 })
