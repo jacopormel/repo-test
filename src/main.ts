@@ -5,7 +5,6 @@ import { Decimal } from '@pormeldev/axis-common-lib';
 import { createAppInstance } from './app.factory';
 
 type PathItem = OpenAPIObject['paths'][string];
-type Operation = NonNullable<PathItem['get']>;
 
 async function bootstrap() {
   Decimal.configure({
@@ -46,12 +45,8 @@ async function bootstrap() {
     for (const method of validMethods) {
       const operation = pathItem[method];
 
-      if (
-        typeof operation === 'object' &&
-        operation &&
-        'responses' in operation
-      ) {
-        const op = operation as Operation;
+      if (typeof operation === 'object' && operation && 'responses' in operation) {
+        const op = operation;
         op.parameters = op.parameters || [];
         op.parameters.push({
           name: 'axis-user',
@@ -94,9 +89,12 @@ async function bootstrap() {
   await app.listen(Number(process.env.APP_PORT), '0.0.0.0');
 }
 
-bootstrap().then(() => {
-  console.info(`Server running on port ${process.env.APP_PORT}`);
-  console.info(
-    `Documentation Swagger http://0.0.0.0:${process.env.APP_PORT}/api-docs`,
-  );
-});
+bootstrap()
+  .then(() => {
+    console.info(`Server running on port ${process.env.APP_PORT}`);
+    console.info(`Documentation Swagger http://0.0.0.0:${process.env.APP_PORT}/api-docs`);
+  })
+  .catch((error: unknown) => {
+    console.error('❌ Failed to start application', error);
+    process.exit(1);
+  });

@@ -1,0 +1,144 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "files": {
+    "includes": ["**", "!**/dist", "!**/*.spec.ts", "!**/*.e2e-spec.ts", "!coverage/**/*"]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100,
+    "attributePosition": "auto",
+    "bracketSameLine": false,
+    "bracketSpacing": true,
+    "expand": "auto",
+    "useEditorconfig": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "complexity": {
+        "noAdjacentSpacesInRegex": "warn",
+        "noExtraBooleanCast": "warn",
+        "noUselessCatch": "warn",
+        "noUselessEscapeInRegex": "warn",
+        "noUselessTypeConstraint": "warn"
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "noConstAssign": "warn",
+        "noConstantCondition": "warn",
+        "noEmptyCharacterClassInRegex": "warn",
+        "noEmptyPattern": "warn",
+        "noGlobalObjectCalls": "warn",
+        "noInvalidBuiltinInstantiation": "warn",
+        "noInvalidConstructorSuper": "warn",
+        "noNonoctalDecimalEscape": "warn",
+        "noPrecisionLoss": "warn",
+        "noSelfAssign": "warn",
+        "noSetterReturn": "warn",
+        "noSwitchDeclarations": "warn",
+        "noUndeclaredVariables": "warn",
+        "noUnreachable": "warn",
+        "noUnreachableSuper": "warn",
+        "noUnsafeFinally": "warn",
+        "noUnsafeOptionalChaining": "warn",
+        "noUnusedLabels": "warn",
+        "noUnusedVariables": "warn",
+        "useIsNan": "warn",
+        "useValidForDirection": "warn",
+        "useValidTypeof": "warn",
+        "useYield": "warn"
+      },
+      "style": {
+        "noCommonJs": "warn",
+        "noNamespace": "warn",
+        "useArrayLiterals": "warn",
+        "useAsConstAssertion": "warn",
+        "useBlockStatements": "off",
+        "useConst": "warn",
+        "useImportType": "off"
+      },
+      "suspicious": {
+        "noDoubleEquals": "warn",
+        "noAsyncPromiseExecutor": "warn",
+        "noCatchAssign": "warn",
+        "noClassAssign": "warn",
+        "noCompareNegZero": "warn",
+        "noControlCharactersInRegex": "warn",
+        "noDebugger": "warn",
+        "noDuplicateCase": "warn",
+        "noDuplicateClassMembers": "warn",
+        "noDuplicateElseIf": "warn",
+        "noDuplicateObjectKeys": "warn",
+        "noDuplicateParameters": "warn",
+        "noEmptyBlockStatements": "warn",
+        "noExplicitAny": "warn",
+        "noExtraNonNullAssertion": "warn",
+        "noFallthroughSwitchClause": "warn",
+        "noFunctionAssign": "warn",
+        "noGlobalAssign": "warn",
+        "noImportAssign": "warn",
+        "noIrregularWhitespace": "warn",
+        "noMisleadingCharacterClass": "warn",
+        "noMisleadingInstantiator": "warn",
+        "noPrototypeBuiltins": "warn",
+        "noRedeclare": "warn",
+        "noShadowRestrictedNames": "warn",
+        "noSparseArray": "warn",
+        "noUnsafeDeclarationMerging": "warn",
+        "noUnsafeNegation": "warn",
+        "noWith": "warn",
+        "useAwait": "warn",
+        "useGetterReturn": "warn",
+        "useNamespaceKeyword": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "quoteStyle": "single",
+      "attributePosition": "auto",
+      "bracketSpacing": true
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
+  "html": {
+    "formatter": {
+      "selfCloseVoidElements": "always"
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noArguments": "warn"
+          },
+          "suspicious": {
+            "noVar": "warn"
+          }
+        }
+      }
+    }
+  ]
+}

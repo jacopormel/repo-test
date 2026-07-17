@@ -6,22 +6,15 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/src/main.ts",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ],
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register"
-      ],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "runtimeArgs": ["-r", "ts-node/register"],
       "env": {
         "NODE_ENV": "development"
       },
       "console": "integratedTerminal",
       "restart": true,
       "protocol": "inspector",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Debug NestJS App (Production)",
@@ -34,20 +27,14 @@
       "console": "integratedTerminal",
       "restart": true,
       "protocol": "inspector",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Debug Tests",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": [
-        "--runInBand",
-        "--no-cache",
-        "--no-coverage"
-      ],
+      "args": ["--runInBand", "--no-cache", "--no-coverage"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "disableOptimisticBPs": true,
@@ -60,12 +47,7 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": [
-        "--config",
-        "./test/jest-e2e.json",
-        "--runInBand",
-        "--no-cache"
-      ],
+      "args": ["--config", "./jest-e2e.json", "--runInBand", "--no-cache"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "disableOptimisticBPs": true,
@@ -81,9 +63,7 @@
       "restart": true,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "${workspaceFolder}",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

@@ -5,12 +5,13 @@ Plantilla para iniciar APIs REST gubernamentales basada en NestJS + Fastify e in
 ### Arquitectura base
 
 Las features se crean dentro de `src/modules/<feature>` y mantienen los límites
-`domain`, `application` e `infrastructure`. El shared kernel vive en `src/shared`:
+`domain`, `application` e `infrastructure`. El código compartido vive en
+`src/common`, siguiendo la convención de los backends Edenor:
 
 ```text
 src/
 |-- modules/
-`-- shared/
+`-- common/
     |-- domain/
     |   |-- aggregate/
     |   |-- entity/
@@ -31,11 +32,78 @@ primitivos disponibles son `StringValue`, `NumberValue`, `IntValue` y
 `BooleanValue`. Los decimales, fechas e IDs usan directamente `Decimal`,
 `DateOnly`, `DateTime` e `Id` de `@pormeldev/axis-common-lib`.
 
-```ts
-import { StringValue } from '@src/shared';
+Los enums no tienen una clase propia en la jerarquía de VOs primitivos: el
+valor subyacente siempre es un primitivo ya cubierto por otro VO
+(`StringValue`, `IntValue`, ...), así que `createEnumValue()` valida
+membership (`value` pertenece a `allowedValues`) y delega el wrapping en el
+`create()` que le pases — `StringValue.create` para enums de string,
+`IntValue.create` para enums numéricos. El VO de dominio concreto extiende el
+VO primitivo elegido y compone el helper en su propio `create()`, igual que
+`GovernmentAgencyName` compone `StringValue.create()` con su regla de
+longitud mínima:
 
-export class OrganismName extends StringValue {}
+```ts
+enum GovernmentAgencyTypeEnum {
+  Federal = 'FEDERAL',
+  Provincial = 'PROVINCIAL',
+  Municipal = 'MUNICIPAL',
+}
+
+export class GovernmentAgencyType extends StringValue {
+  static create(value: string): Result<GovernmentAgencyType, CodedDomainError> {
+    const result = createEnumValue(value, Object.values(GovernmentAgencyTypeEnum), StringValue.create);
+    if (!result.ok) {
+      return errorResult(result.errors);
+    }
+    return okResult(new GovernmentAgencyType(value));
+  }
+
+  static reconstitute(value: string): GovernmentAgencyType {
+    return new GovernmentAgencyType(value);
+  }
+}
 ```
+
+```ts
+import { StringValue } from '@src/common';
+
+export class GovernmentAgencyName extends StringValue {}
+```
+
+Ejemplo real ya presente en el repo: `src/modules/government-agency/` implementa
+un CRUD completo (`GET`/`POST`/`PATCH`/`DELETE /government-agencies`) siguiendo
+el patrón hexagonal + CQRS de Axis, y sirve como referencia para features nuevas:
+
+- **Domain**: aggregate `GovernmentAgency` con un único VO (`GovernmentAgencyName`,
+  mínimo 10 caracteres), `create()`/`reconstitute()` + `Result`, y borrado lógico
+  (`markAsDeleted()`/`deletedAt`).
+- **Application**: `query/` (lectura, `BaseQueryRepository`) y `command/`
+  (escritura, `BaseRepository`) separados; cada usecase vive en su propia carpeta
+  con su definición de query o su lógica propia. DTOs realmente compartidos
+  (como el read-model) van en `application/dto/`.
+- **Infrastructure**: cada endpoint tiene su propia carpeta bajo
+  `infrastructure/in/<endpoint>/`, con su **propio controller** (un
+  `@ApiJsonApiController('government-agencies')` por archivo, no uno solo con
+  todos los métodos), su request/response DTO y su mapper. NestJS permite
+  registrar varios controllers con el mismo prefijo de ruta en un mismo
+  módulo sin problema, siempre que los verbos/paths no choquen. Los DTOs y
+  helpers compartidos por varios endpoints (ej. la respuesta de listado, el
+  mapper de errores HTTP) van en `infrastructure/in/common/`. Usa los
+  decoradores reales de `@pormeldev/axis-nestjs-common`
+  (`@ApiJsonApiController`, `@ApiJsonApiFindByQuery`, `@ApiJsonApiCreate`,
+  `@ApiJsonApiUpdate`, `@ApiJsonApiDelete`).
+- **`internalId`**: cada entity puede tener una surrogate key autoincremental de
+  uso exclusivamente interno (asociaciones/optimizaciones de persistencia) —
+  vive solo en la entity TypeORM, nunca en el aggregate de dominio ni en
+  ningún DTO/respuesta. Ver `AGENTS.md` (raíz de `Proyectos/`) para el detalle
+  de esta convención.
+
+> Nota de implementación: las clases `Coded*Error` de `axis-common-lib` resetean
+> su propio prototipo en el constructor (`Object.setPrototypeOf(this, EstaClase.prototype)`),
+> lo que rompe `instanceof` contra subclases propias (ej. `GovernmentAgencyNotFoundError`).
+> Para distinguir tipos de error en un controller, chequeá `instanceof` contra la
+> clase base de Axis (`CodedApplicationNotFoundError`, `CodedDomainError`, etc.),
+> no contra tu subclase.
 
 ### Versiones Axis
 
@@ -49,115 +117,149 @@ contenido del artefacto antes de subir estas versiones.
 
 ### Características
 
-- Soporte de múltiples motores de base de datos con TypeORM: `postgres`, `mssql`, `oracle`, `mysql`, `mariadb`
+- Base de datos: PostgreSQL vía TypeORM (motor único de este proyecto)
 - Replicación (master/slaves)
 - Health checks para DB, Redis y OAuth2 Server
 - Swagger/OpenAPI con título/descr./versión desde variables de entorno
 - Logging estandarizado que sigue las normas de Edenor para monitoreo con correlación de requests
 - Validación estricta de variables de entorno: si falta algo requerido, la app no arranca
+- CORS configurado vía `CORS_ORIGINS` (whitelist por env, sin `*` abierto)
 - Debug listo para VS Code y suite de tests con Jest
 
 ## Requisitos
 
 - Node.js 20+ (LTS recomendado)
-- npm 9+
-- Docker (opcional) para levantar Redis y la base de datos
+- pnpm 10+ (el repo fija `packageManager` en `package.json`; con Corepack habilitado, `pnpm` ya resuelve la versión correcta)
+- Docker (opcional) para levantar Postgres/Redis, o el stack completo incluida la API
 
 ## Inicio rápido
 
 ```bash
 # 1) Instalar dependencias
-npm install
+pnpm install
 
 # 2) Configurar variables de entorno
 cp .env.example .env
-# Todas las variables son OBLIGATORIAS y están documentadas en .env.example.  Modificar .env de acuerdo a tu ambiente
+# Todas las variables son OBLIGATORIAS y están documentadas en .env.example. Modificar .env de acuerdo a tu ambiente
 
-# 3) PostgreSQL es el motor predeterminado y su driver ya está instalado
+# 3) Levantar Postgres/Redis con Docker Compose
+docker compose up -d
 
-# 4) Levantar DB/Redis con Docker Compose según el motor
-docker compose -f docker-compose.postgres.yml up -d
-
-# 5) Ejecutar en desarrollo (watch)
-npm run start:dev
+# 4) Ejecutar en desarrollo (watch)
+pnpm run start:dev
 
 # Swagger UI
 # http://localhost:3000/api-docs
 ```
 
+### Acceso a `@pormeldev/*` (GitHub Packages)
+
+Las dependencias del scope `@pormeldev` se resuelven contra GitHub Packages
+(ver `.npmrc`). Con pnpm, el token de un `.npmrc` de proyecto **no se expande**
+por seguridad (evita que un archivo commiteado filtre secretos); hay que
+configurarlo en tu entorno antes de instalar:
+
+```bash
+# Opción A: variable de entorno + config de usuario (una sola vez)
+pnpm config set "//npm.pkg.github.com/:_authToken" "$GITHUB_PAT"
+
+# Opción B: agregar la misma línea del .npmrc del repo a tu ~/.npmrc de usuario
+```
+
+`GITHUB_PAT` requiere los scopes `read:packages` y `repo`.
+
 ## Variables de entorno
 
 - La app valida las variables al arranque y aborta si falta alguna requerida.
-- Copia `.env.example` a `.env` y completa según tu motor/entorno.
-
-### Motores de base de datos y notas
-
-- `mssql`: usa variables específicas prefijadas `MSSQL_` (pool, encrypt, trustServerCertificate, etc.)
-- `postgres`: típicas de PG; pool y SSL según necesidad
-- `mysql` / `mariadb`: mismas variables base, drivers `mysql2`
-- `oracle`: puede configurarse con `ORACLE_CONNECT_STRING` o con `DB_MASTER_*` (host/port/service)
-  - Si usas connect string, no se requieren `DB_MASTER_HOST/PORT/DATABASE`
-  - En la imagen `gvenzl/oracle-xe` la PDB por defecto es `XEPDB1` (no `ORCLPDB1`)
+- Copia `.env.example` a `.env` y completa según tu entorno.
+- `DB_TYPE=postgres` es fijo: lo exige el validador de Axis al arrancar, no es un selector de motor en este proyecto.
 
 ### Replicación (slaves)
 
 - Controlada por variables `DB_REPLICATION_ENABLED` y `DB_SLAVE_COUNT` + bloques `DB_SLAVE_{N}_*`.
-- TypeORM soporta replicación en `postgres`, `mysql`, `mariadb`. En `mssql` y `oracle` no se recomienda/soporta del mismo modo.
 
-## Docker Compose por motor (opcional)
+### CORS
 
-Este repositorio incluye archivos separados para cada motor junto con Redis. Usa el que necesites:
+- `CORS_ORIGINS`: lista de orígenes permitidos separados por coma (ver `.env.example`).
+- Configurado en `app.factory.ts` vía `app.enableCors(...)`: methods explícitos, headers `Axis-User`/`Axis-Source-System`/`Axis-Request-Id`, `credentials: true`.
+
+## Migraciones (TypeORM CLI)
+
+`src/common/config/data-source.ts` expone el `DataSource` que usa la CLI (fuera de la app de Nest, sin DI: lee `.env` directo). Migraciones nuevas quedan en `src/common/migration/`.
 
 ```bash
-# MSSQL Server
-docker compose -f docker-compose.mssqlserver.yml up -d
-docker compose -f docker-compose.mssqlserver.yml down
-
-# PostgreSQL
-docker compose -f docker-compose.postgres.yml up -d
-docker compose -f docker-compose.postgres.yml down
-
-# MySQL
-docker compose -f docker-compose.mysql.yml up -d
-docker compose -f docker-compose.mysql.yml down
-
-# MariaDB
-docker compose -f docker-compose.mariadb.yml up -d
-docker compose -f docker-compose.mariadb.yml down
-
-# Oracle XE
-docker compose -f docker-compose.oracle.yml up -d
-docker compose -f docker-compose.oracle.yml down
+pnpm run migration:generate --name=NombreDeLaMigracion
+pnpm run migration:create --name=NombreDeLaMigracion
+pnpm run migration:run
+pnpm run migration:revert
 ```
+
+`migrationsRun: true` en el bootstrap corre las migraciones pendientes al arrancar la app; estos scripts son para generarlas/revertirlas manualmente en desarrollo.
+
+## Seeds
+
+`src/common/seed/` tiene el mismo patrón que `edenor-investment-backend`: un
+`SeedService` genérico (`runSeed`/`runAllSeeds`, transaccional, con rollback si
+falla) y seeds concretos en `src/common/seed/data/*.seed.ts` que implementan
+`SeedInterface`. Cada seed es idempotente (chequea por ID fijo antes de
+insertar), así que correrlo más de una vez no duplica datos.
+
+- **Automático al arrancar**: si `RUN_SEEDS_ON_STARTUP=true` (default en
+  `.env`/`.env.example`, pensado para desarrollo local), `AppModule.onModuleInit()`
+  corre todos los seeds disponibles. Esto incluye levantar la API vía
+  `docker compose up`, ya que el servicio `api` lee el mismo `.env`.
+- **Manual**: `pnpm run seed:run` (usa `src/common/seed/seed.command.ts`, un
+  contexto de Nest standalone fuera del ciclo de vida HTTP).
+
+Agregar un seed nuevo: crear `src/common/seed/data/<nombre>.seed.ts`
+implementando `SeedInterface`, y sumarlo al array que devuelve
+`SeedService.getAllAvailableSeeds()`.
+
+## Docker Compose
+
+Este repositorio incluye un único `docker-compose.yml` con Postgres + Redis +
+la API (servicio `api`, buildeado desde el `Dockerfile` del repo), con las
+credenciales tomadas de `.env` (con defaults de desarrollo si no está seteado):
+
+```bash
+docker compose up -d
+docker compose down
+```
+
+El build de la imagen necesita `GITHUB_PAT` en tu entorno (mismo token que usás
+para instalar `@pormeldev/*`, ver sección de arriba) — se pasa como build
+secret de Docker, nunca queda persistido en ninguna capa de la imagen. Dentro
+de la red de compose, la API se conecta a Postgres/Redis por nombre de
+servicio (`postgres`/`redis`), no por `localhost` — eso lo pisa el `docker-compose.yml`
+vía `environment:` sin que tengas que tocar tu `.env` local.
 
 ## Scripts (package.json)
 
 ```bash
 # Desarrollo
-npm run start           # arranque
-npm run start:dev       # watch
-npm run start:debug     # debug con inspector
+pnpm run start           # arranque
+pnpm run start:dev       # watch
+pnpm run start:debug     # debug con inspector
 
 # Build/Prod
-npm run build
-npm run start:prod      # node dist/main
+pnpm run build
+pnpm run start:prod      # node dist/main
 
 # Pruebas
-npm test
-npm run test:watch
-npm run test:cov
-npm run test:e2e
+pnpm test
+pnpm run test:watch
+pnpm run test:cov
+pnpm run test:e2e
 
-# Lint/Format
-npm run lint
-npm run format
+# Lint/Format (Biome)
+pnpm run lint          # lint --write
+pnpm run format        # format --write
+pnpm run check          # lint + format + organize imports, sin escribir
+pnpm run check:write    # ídem, aplicando fixes
 
-# Helpers para drivers de DB
-npm run add:pg
-npm run add:mysql
-npm run add:mariadb
-npm run add:mssql
-npm run add:oracle
+# Migraciones y seeds
+pnpm run migration:run
+pnpm run seed:run
 ```
 
 ## Health checks
@@ -165,7 +267,6 @@ npm run add:oracle
 - Endpoint: `GET /health`
 - Requiere header `axis-user` con un JSON válido.
 - Plugins incluidos: DB, Redis, OAuth2 Server.
-- Para Oracle, la sonda DB usa `SELECT 1 FROM DUAL`; para otros motores `SELECT 1`.
 
 Ejemplo de invocación:
 
@@ -188,4 +289,8 @@ curl -s \
 ## Testing
 
 - Framework: Jest (`@nestjs/testing`, `ts-jest`).
-- E2E: configuración en `test/jest-e2e.json`.
+- Unit: specs `*.spec.ts` en una carpeta `__test__/` junto al código que testean
+  (ej. `domain/value-object/__test__/mi-vo.value.spec.ts`), no sueltos al lado
+  del archivo. Coincide con la convención real de `edenor-investment-backend` y
+  `volcan-pae-backend`.
+- E2E: configuración en `jest-e2e.json` (raíz del repo); specs `*.e2e-spec.ts` bajo `src/**/__test__/`.
