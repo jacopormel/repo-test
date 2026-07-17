@@ -1,0 +1,47 @@
+name: gubernamentales-backend
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_MASTER_USERNAME:-gubernamentales}
+      POSTGRES_PASSWORD: ${DB_MASTER_PASSWORD:-gubernamentales_dev}
+      POSTGRES_DB: ${DB_MASTER_DATABASE:-gubernamentales}
+      TZ: UTC
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    ports:
+      - "${DB_MASTER_PORT:-5432}:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+volumes:
+  pg-data:
+  redis-data:
+
+networks:
+  app-network:

@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql-server
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -q [s]qlservr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${DB_MASTER_PASSWORD}
+      - TZ=UTC
+    ports:
+      - "${DB_MASTER_PORT:-1433}:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+volumes:
+  mssql-data:
+  redis-data:
+
+networks:
+  app-network:

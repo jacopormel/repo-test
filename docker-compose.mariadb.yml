@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  db:
+    image: mariadb:11
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_MASTER_PASSWORD}
+      - MARIADB_DATABASE=${DB_MASTER_DATABASE}
+      - MARIADB_USER=${DB_MASTER_USERNAME}
+      - MARIADB_PASSWORD=${DB_MASTER_PASSWORD}
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    ports:
+      - "${DB_MASTER_PORT:-3306}:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+volumes:
+  mariadb-data:
+  redis-data:
+
+networks:
+  app-network:
