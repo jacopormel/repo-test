@@ -1,9 +1,12 @@
-import { Global, Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Global, MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
 import { APP_GUARD, Reflector } from '@nestjs/core';
-
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AxisUser } from '@pormeldev/axis-common-lib';
+import {
+  AwsvpAuthorizationLogPublisher,
+  RedisCacheLogPublisher,
+} from '@pormeldev/axis-logpublisher-edenor';
 import {
   DbHealthPlugin,
   HEALTH_PLUGINS,
@@ -11,46 +14,41 @@ import {
   OAUTH2ServerHealthPlugin,
   RedisHealthPlugin,
 } from '@pormeldev/axis-module-health';
-
 import {
-  TransactionContextConfigurator,
-  TypeOrmTransactionAdapter,
-} from '@pormeldev/axis-service-database-typeorm';
-import { configureTransactionContext } from './shared/config/transaction-context.config';
+  AxisLoggingContextMiddleware,
+  AxisLoggingModule,
+} from '@pormeldev/axis-module-logging-edenor';
+import { DataSourceType, UserModule } from '@pormeldev/axis-module-users';
 import {
   AxisNestJSCommonModule,
-  SnakeToCamelInterceptor,
+  getMissingRequiredEnvVars,
   LocalUserGuard,
+  SnakeToCamelInterceptor,
 } from '@pormeldev/axis-nestjs-common';
-import { DataSourceType, UserModule } from '@pormeldev/axis-module-users';
-import { AxisUser } from '@pormeldev/axis-common-lib';
-import {
-  AXIS_LOGGER,
-  LoggerInterface,
-  LogLevel,
-} from '@pormeldev/axis-service-logger';
-import { AXIS_CACHE, CacheInterface } from '@pormeldev/axis-service-cache';
-import { RedisCacheService } from '@pormeldev/axis-service-cache-redis';
-import { RedisCacheLogPublisher } from '@pormeldev/axis-logpublisher-edenor';
 import {
   AuthorizationService,
   AXIS_AUTHORIZATION_SERVICE,
 } from '@pormeldev/axis-service-authorization';
 import { AWSVerifiedPermissionsAuthorizationService } from '@pormeldev/axis-service-authorization-awsvp';
-import { AwsvpAuthorizationLogPublisher } from '@pormeldev/axis-logpublisher-edenor';
+import { AXIS_CACHE, CacheInterface } from '@pormeldev/axis-service-cache';
+import { RedisCacheService } from '@pormeldev/axis-service-cache-redis';
 import {
-  AxisLoggingModule,
-  AxisLoggingContextMiddleware,
-} from '@pormeldev/axis-module-logging-edenor';
+  getMissingRequiredDatabaseEnvVars,
+  TransactionContextConfigurator,
+  TypeOrmTransactionAdapter,
+} from '@pormeldev/axis-service-database-typeorm';
+import { AXIS_LOGGER, LoggerInterface, LogLevel } from '@pormeldev/axis-service-logger';
 import {
+  buildBaseOrmConfig,
+  buildPostgresOptionsFromConfig,
   readMasterConfigFromConfig,
   readSlavesConfigFromConfig,
-  buildEngineSpecificOptionsFromConfig,
-  buildBaseOrmConfig,
   shouldEnableReplication,
-} from '@src/shared/config/db-config';
-import { getMissingRequiredDatabaseEnvVars } from '@pormeldev/axis-service-database-typeorm';
-import { getMissingRequiredEnvVars } from '@pormeldev/axis-nestjs-common';
+} from '@src/common/config/db-config';
+import { DataSource } from 'typeorm';
+import { configureTransactionContext } from './common/config/transaction-context.config';
+import { SeedService } from './common/seed/seed.service';
+import { GovernmentAgencyModule } from './modules/government-agency/government-agency.module';
 
 const requiredAppEnvVars = [
   'APP_TITLE',
@@ -61,6 +59,8 @@ const requiredAppEnvVars = [
   'HEALTH_RUNNING_TEXT',
   'HEALTH_RUNNING_WITH_ERRORS_TEXT',
   'HEALTH_TIMEZONE',
+  'CORS_ORIGINS',
+  'RUN_SEEDS_ON_STARTUP',
   'REDIS_HOST',
   'REDIS_PORT',
   'REDIS_TLS',
@@ -87,10 +87,7 @@ const requiredAppEnvVars = [
 
 const missingRequiredAppEnvVars = getMissingRequiredEnvVars(requiredAppEnvVars);
 const missingRequiredDatabaseEnvVars = getMissingRequiredDatabaseEnvVars();
-const missingRequiredEnvVars = [
-  ...missingRequiredAppEnvVars,
-  ...missingRequiredDatabaseEnvVars,
-];
+const missingRequiredEnvVars = [...missingRequiredAppEnvVars, ...missingRequiredDatabaseEnvVars];
 if (missingRequiredEnvVars.length > 0) {
   console.error('❌ MISSING REQUIRED ENVIRONMENT VARIABLES:');
   missingRequiredEnvVars.forEach((varName) => {
@@ -114,10 +111,7 @@ if (missingRequiredEnvVars.length > 0) {
         prefix: true as const,
         prefixName: process.env.AXIS_LOG_PREFIX_NAME as string,
         prefixValue: process.env.AXIS_LOG_PREFIX_VALUE as string,
-        format:
-          (process.env.AXIS_LOG_FORMAT || 'json').toLowerCase() === 'text'
-            ? 'text'
-            : 'json',
+        format: (process.env.AXIS_LOG_FORMAT || 'json').toLowerCase() === 'text' ? 'text' : 'json',
         colors: (process.env.AXIS_LOG_COLORS || '').toLowerCase() === 'true',
       } as any,
       {
@@ -131,31 +125,21 @@ if (missingRequiredEnvVars.length > 0) {
       imports: [ConfigModule],
       inject: [ConfigService, AXIS_LOGGER],
       useFactory: (cfg: ConfigService, appLogger: LoggerInterface) => {
-        const type = cfg.get('DB_TYPE') as
-          'postgres' | 'mssql' | 'oracle' | 'mysql' | 'mariadb';
-        const typeormQueryLogs =
-          (cfg.get('TYPEORM_QUERY_LOGS') || '').toLowerCase() === 'true';
-        const slaveCount = parseInt(
-          cfg.get<string>('DB_SLAVE_COUNT') as string,
-        );
+        const typeormQueryLogs = (cfg.get('TYPEORM_QUERY_LOGS') || '').toLowerCase() === 'true';
+        const slaveCount = parseInt(cfg.get<string>('DB_SLAVE_COUNT') as string);
 
         const master = readMasterConfigFromConfig(cfg);
         const slaves = readSlavesConfigFromConfig(cfg, slaveCount);
 
         const baseConfig = buildBaseOrmConfig(
-          type,
           typeormQueryLogs,
           appLogger,
           master.host,
           master.database,
         );
-        const { enabled, defaultMode } = shouldEnableReplication(
-          cfg,
-          type,
-          slaveCount,
-        );
+        const { enabled, defaultMode } = shouldEnableReplication(cfg, slaveCount);
 
-        let finalConfig: any = { ...baseConfig };
+        const finalConfig: any = { ...baseConfig };
         if (enabled) {
           const replication: any = { master, slaves };
           if (defaultMode === 'master' || defaultMode === 'slave')
@@ -169,7 +153,7 @@ if (missingRequiredEnvVars.length > 0) {
           finalConfig.database = master.database;
         }
 
-        const engineSpecific = buildEngineSpecificOptionsFromConfig(cfg, type);
+        const engineSpecific = buildPostgresOptionsFromConfig(cfg);
         return { ...finalConfig, ...engineSpecific };
       },
     }),
@@ -183,13 +167,10 @@ if (missingRequiredEnvVars.length > 0) {
     }),
     HealthModule.register(
       {
-        errorStatusCode: parseInt(
-          process.env.HEALTH_ERROR_STATUS_CODE as string,
-        ),
+        errorStatusCode: parseInt(process.env.HEALTH_ERROR_STATUS_CODE as string),
         okStatusCode: parseInt(process.env.HEALTH_OK_STATUS_CODE as string),
         runningText: process.env.HEALTH_RUNNING_TEXT as string,
-        runningWithErrorsText: process.env
-          .HEALTH_RUNNING_WITH_ERRORS_TEXT as string,
+        runningWithErrorsText: process.env.HEALTH_RUNNING_WITH_ERRORS_TEXT as string,
         timezone: process.env.HEALTH_TIMEZONE as string,
       },
       {
@@ -197,19 +178,12 @@ if (missingRequiredEnvVars.length > 0) {
         useFactory: (dataSource: DataSource, cfg: ConfigService) => {
           const redisHost = cfg.get('REDIS_HOST') as string;
           const redisPort = parseInt(cfg.get('REDIS_PORT') as string);
-          const redisTls =
-            (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
-          const redisTimeoutMs = parseInt(
-            cfg.get<string>('REDIS_TIMEOUT_MS') as string,
-          );
+          const redisTls = (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
+          const redisTimeoutMs = parseInt(cfg.get<string>('REDIS_TIMEOUT_MS') as string);
 
           const tenantId = cfg.get('OAUTH2SERVER_TENANT_ID') as string;
-          const authorityHost = cfg.get<string>(
-            'OAUTH2SERVER_AUTHORITY_HOST',
-          ) as string;
-          const oauthTimeoutMs = parseInt(
-            cfg.get<string>('OAUTH2SERVER_TIMEOUT_MS') as string,
-          );
+          const authorityHost = cfg.get<string>('OAUTH2SERVER_AUTHORITY_HOST') as string;
+          const oauthTimeoutMs = parseInt(cfg.get<string>('OAUTH2SERVER_TIMEOUT_MS') as string);
 
           const plugins = [
             new DbHealthPlugin(dataSource),
@@ -231,6 +205,8 @@ if (missingRequiredEnvVars.length > 0) {
         inject: [DataSource, ConfigService],
       },
     ),
+
+    GovernmentAgencyModule,
   ],
   providers: [
     {
@@ -238,19 +214,12 @@ if (missingRequiredEnvVars.length > 0) {
       useFactory: (dataSource: DataSource, cfg: ConfigService) => {
         const redisHost = cfg.get('REDIS_HOST') as string;
         const redisPort = parseInt(cfg.get('REDIS_PORT') as string);
-        const redisTls =
-          (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
-        const redisTimeoutMs = parseInt(
-          cfg.get<string>('REDIS_TIMEOUT_MS') as string,
-        );
+        const redisTls = (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
+        const redisTimeoutMs = parseInt(cfg.get<string>('REDIS_TIMEOUT_MS') as string);
 
         const tenantId = cfg.get('OAUTH2SERVER_TENANT_ID') as string;
-        const authorityHost = cfg.get<string>(
-          'OAUTH2SERVER_AUTHORITY_HOST',
-        ) as string;
-        const oauthTimeoutMs = parseInt(
-          cfg.get<string>('OAUTH2SERVER_TIMEOUT_MS') as string,
-        );
+        const authorityHost = cfg.get<string>('OAUTH2SERVER_AUTHORITY_HOST') as string;
+        const oauthTimeoutMs = parseInt(cfg.get<string>('OAUTH2SERVER_TIMEOUT_MS') as string);
 
         const plugins = [
           new DbHealthPlugin(dataSource),
@@ -273,10 +242,7 @@ if (missingRequiredEnvVars.length > 0) {
     },
     {
       provide: AXIS_AUTHORIZATION_SERVICE,
-      useFactory: (
-        cfg: ConfigService,
-        appLogger: LoggerInterface,
-      ): AuthorizationService => {
+      useFactory: (cfg: ConfigService, appLogger: LoggerInterface): AuthorizationService => {
         const region = cfg.get('AWVP_REGION') as string;
         const policyStoreId = cfg.get('AWVP_POLICY_STORE_ID') as string;
         const namespace = cfg.get('AWVP_NAMESPACE') as string;
@@ -295,14 +261,10 @@ if (missingRequiredEnvVars.length > 0) {
     },
     {
       provide: AXIS_CACHE,
-      useFactory: async (
-        cfg: ConfigService,
-        appLogger: LoggerInterface,
-      ): Promise<CacheInterface> => {
+      useFactory: (cfg: ConfigService, appLogger: LoggerInterface): CacheInterface => {
         const host = cfg.get<string>('REDIS_HOST') as string;
         const port = parseInt(cfg.get<string>('REDIS_PORT') as string);
-        const tls =
-          (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
+        const tls = (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
         const namespace = cfg.get<string>('CACHE_NAMESPACE') as string;
         const ttl = parseInt(cfg.get<string>('REDIS_TTL') as string);
         const logger = new RedisCacheLogPublisher(appLogger, { host, port });
@@ -323,21 +285,32 @@ if (missingRequiredEnvVars.length > 0) {
     {
       provide: APP_GUARD,
       useFactory: (dataSource: DataSource, reflector: Reflector) => {
+        // No-op: this template doesn't sync extra fields on local user insert/update.
         const emptyOnInsert = (_u: AxisUser, _id: number) => {};
+        // No-op: this template doesn't sync extra fields on local user insert/update.
         const emptyOnUpdate = (_u: AxisUser, _id: number) => {};
-        return new LocalUserGuard(
-          dataSource,
-          reflector,
-          emptyOnInsert,
-          emptyOnUpdate,
-        );
+        return new LocalUserGuard(dataSource, reflector, emptyOnInsert, emptyOnUpdate);
       },
       inject: [DataSource, Reflector],
     },
+    SeedService,
   ],
   exports: [TypeOrmTransactionAdapter, AXIS_CACHE, AXIS_AUTHORIZATION_SERVICE],
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnModuleInit {
+  constructor(private readonly seedService: SeedService) {}
+
+  async onModuleInit() {
+    if ((process.env.RUN_SEEDS_ON_STARTUP || '').toLowerCase() !== 'true') {
+      return;
+    }
+
+    const result = await this.seedService.runAllSeeds();
+    if (!result.ok) {
+      console.error('❌ Seed failed:', result.errors);
+    }
+  }
+
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AxisLoggingContextMiddleware).forRoutes('*');
   }

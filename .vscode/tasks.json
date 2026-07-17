@@ -4,11 +4,8 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "build"
-      ],
+      "command": "pnpm",
+      "args": ["run", "build"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -19,18 +16,13 @@
         "focus": false,
         "panel": "shared"
       },
-      "problemMatcher": [
-        "$tsc"
-      ]
+      "problemMatcher": ["$tsc"]
     },
     {
       "label": "Start Dev",
       "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "start:dev"
-      ],
+      "command": "pnpm",
+      "args": ["run", "start:dev"],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -55,11 +47,8 @@
     {
       "label": "Test",
       "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "test"
-      ],
+      "command": "pnpm",
+      "args": ["run", "test"],
       "group": "test",
       "presentation": {
         "echo": true,
@@ -71,11 +60,8 @@
     {
       "label": "Test E2E",
       "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "test:e2e"
-      ],
+      "command": "pnpm",
+      "args": ["run", "test:e2e"],
       "group": "test",
       "presentation": {
         "echo": true,
@@ -87,11 +73,8 @@
     {
       "label": "Lint",
       "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "lint"
-      ],
+      "command": "pnpm",
+      "args": ["run", "lint"],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -103,11 +86,8 @@
     {
       "label": "Format",
       "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "format"
-      ],
+      "command": "pnpm",
+      "args": ["run", "format"],
       "group": "build",
       "presentation": {
         "echo": true,

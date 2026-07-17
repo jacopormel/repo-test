@@ -1,17 +1,17 @@
 import 'reflect-metadata';
-import {
-  NestFastifyApplication,
-  FastifyAdapter,
-} from '@nestjs/platform-fastify';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
-import { AllExceptionsFilter } from '@pormeldev/axis-nestjs-common';
-import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { HttpRequestLogInterceptor } from '@pormeldev/axis-module-logging-edenor';
+import {
+  AllExceptionsFilter,
+  mapValidationErrorsToCodedInfrastructureErrors,
+} from '@pormeldev/axis-nestjs-common';
+import { AXIS_LOGGER, LoggerInterface } from '@pormeldev/axis-service-logger';
 import { ValidatorOptions } from 'class-validator';
 import qs from 'qs';
-import { AXIS_LOGGER, LoggerInterface } from '@pormeldev/axis-service-logger';
-import { HttpRequestLogInterceptor } from '@pormeldev/axis-module-logging-edenor';
-import { mapValidationErrorsToCodedInfrastructureErrors } from '@pormeldev/axis-nestjs-common';
+import { AppModule } from './app.module';
+import { parseListOfAllowedOrigins } from './common/config/cors.config';
 
 export async function createAppInstance(): Promise<NestFastifyApplication> {
   const fastifyAdapter = new FastifyAdapter({
@@ -19,16 +19,27 @@ export async function createAppInstance(): Promise<NestFastifyApplication> {
       querystringParser: (str: string) => qs.parse(str, { allowDots: true }),
     },
   });
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    fastifyAdapter,
-    { bodyParser: true },
-  );
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter, {
+    bodyParser: true,
+  });
+
+  app.enableCors({
+    origin: parseListOfAllowedOrigins(process.env.CORS_ORIGINS),
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Axis-User',
+      'Axis-Source-System',
+      'Axis-Request-Id',
+    ],
+    credentials: true,
+  });
 
   app.useGlobalFilters(new AllExceptionsFilter());
 
   // Logging HTTP via interceptor
-  const axisLogger = app.get<LoggerInterface>(AXIS_LOGGER as any);
+  const axisLogger = app.get<LoggerInterface>(AXIS_LOGGER);
   app.useGlobalInterceptors(new HttpRequestLogInterceptor(axisLogger));
 
   const validatorOptions: ValidatorOptions = {
@@ -47,8 +58,7 @@ export async function createAppInstance(): Promise<NestFastifyApplication> {
       transform: true,
       exceptionFactory: (errors) => {
         // Mapear errores de validación a CodedInfrastructureError
-        const codedErrors =
-          mapValidationErrorsToCodedInfrastructureErrors(errors);
+        const codedErrors = mapValidationErrorsToCodedInfrastructureErrors(errors);
 
         // Formatear para BadRequestException (mantiene compatibilidad con el filtro)
         const formattedErrors = codedErrors.map((error) => ({
