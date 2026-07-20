@@ -8,6 +8,7 @@ import {
   PatchAccumulator,
   Result,
 } from '@src/common';
+import { GovernmentAgencyAlreadyDeletedError } from './error/government-agency-already-deleted.error';
 import { GovernmentAgencyName } from './value-object/government-agency-name.value';
 
 interface GovernmentAgencyProps {
@@ -40,6 +41,10 @@ export class GovernmentAgency extends AggregateRoot<Id> {
   }
 
   update(changes: { name?: string }): Result<void, CodedDomainError> {
+    if (this.isDeleted()) {
+      return errorResult([new GovernmentAgencyAlreadyDeletedError()]);
+    }
+
     const patch = new PatchAccumulator<CodedDomainError>();
 
     patch.apply(changes.name, GovernmentAgencyName.create, (value) => {
@@ -49,8 +54,13 @@ export class GovernmentAgency extends AggregateRoot<Id> {
     return patch.toResult();
   }
 
-  markAsDeleted(): void {
+  markAsDeleted(): Result<void, CodedDomainError> {
+    if (this.isDeleted()) {
+      return errorResult([new GovernmentAgencyAlreadyDeletedError()]);
+    }
+
     this.props.deletedAt = DateTime.now();
+    return okResult(undefined);
   }
 
   isDeleted(): boolean {

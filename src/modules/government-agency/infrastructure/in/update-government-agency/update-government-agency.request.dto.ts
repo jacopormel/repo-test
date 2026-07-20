@@ -7,7 +7,8 @@ export class UpdateGovernmentAgencyRequestDto {
     example: 'Ministry of Health',
     minLength: 10,
   })
+  @IsOptional()
   @IsString()
   @MinLength(10)
-  name!: string;
+  name?: string;
 }

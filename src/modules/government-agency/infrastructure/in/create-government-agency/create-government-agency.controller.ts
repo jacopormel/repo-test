@@ -1,5 +1,7 @@
-import { Body } from '@nestjs/common';
+import { Body, UseGuards } from '@nestjs/common';
 import { ApiJsonApiController, ApiJsonApiCreate } from '@pormeldev/axis-nestjs-common';
+import { AuthorizationGuard } from '@src/common/infrastructure/authorization/authorization.guard';
+import { RequirePermission } from '@src/common/infrastructure/authorization/require-permission.decorator';
 import { CreateGovernmentAgencyUsecase } from '@src/modules/government-agency/application/command/create-government-agency/create-government-agency.usecase';
 import { mapGovernmentAgencyErrorsToHttpException } from '../common/government-agency-http-error.mapper';
 import { CreateGovernmentAgencyMapper } from './create-government-agency.mapper';
@@ -7,6 +9,7 @@ import { CreateGovernmentAgencyRequestDto } from './create-government-agency.req
 import { CreateGovernmentAgencyResponseDto } from './create-government-agency.response.dto';
 
 @ApiJsonApiController('government-agencies')
+@UseGuards(AuthorizationGuard)
 export class CreateGovernmentAgencyController {
   constructor(private readonly createGovernmentAgencyUsecase: CreateGovernmentAgencyUsecase) {}
 
@@ -15,6 +18,7 @@ export class CreateGovernmentAgencyController {
     summary: 'Create a government agency',
     apiType: 'government-agencies',
   })
+  @RequirePermission('CreateGovernmentAgency', 'GovernmentAgency')
   async create(
     @Body() body: CreateGovernmentAgencyRequestDto,
   ): Promise<{ data: CreateGovernmentAgencyResponseDto }> {
