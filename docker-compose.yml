@@ -43,6 +43,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
       secrets:
         - github_pat
     restart: unless-stopped
@@ -55,6 +56,12 @@ services:
       REDIS_HOST: redis
     ports:
       - "${APP_PORT:-3000}:${APP_PORT:-3000}"
+    volumes:
+      # Código fuente del host, para que nodemon detecte los cambios y reinicie.
+      - .:/app
+      # Volumen dedicado: evita que el bind mount de arriba pise el
+      # node_modules instalado dentro del container (Linux) con el del host.
+      - api-node-modules:/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
@@ -66,6 +73,7 @@ services:
 volumes:
   pg-data:
   redis-data:
+  api-node-modules:
 
 networks:
   app-network:

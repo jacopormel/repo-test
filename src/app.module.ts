@@ -38,6 +38,7 @@ import {
   TypeOrmTransactionAdapter,
 } from '@pormeldev/axis-service-database-typeorm';
 import { AXIS_LOGGER, LoggerInterface, LogLevel } from '@pormeldev/axis-service-logger';
+import { AllowAllAuthorizationService } from '@src/common/infrastructure/authorization/allow-all-authorization.service';
 import {
   buildBaseOrmConfig,
   buildPostgresOptionsFromConfig,
@@ -49,6 +50,8 @@ import { DataSource } from 'typeorm';
 import { configureTransactionContext } from './common/config/transaction-context.config';
 import { SeedService } from './common/seed/seed.service';
 import { GovernmentAgencyModule } from './modules/government-agency/government-agency.module';
+
+const authorizationProvider = (process.env.AUTHORIZATION_PROVIDER || 'awsvp').toLowerCase();
 
 const requiredAppEnvVars = [
   'APP_PORT',
@@ -81,9 +84,9 @@ const requiredAppEnvVars = [
   'AXIS_LOG_TARGET',
   'AXIS_LOG_INTEGRATION_TYPE',
   'AXIS_LOG_APP_NAME',
-  'AWVP_REGION',
-  'AWVP_POLICY_STORE_ID',
-  'AWVP_NAMESPACE',
+  ...(authorizationProvider === 'allow-all'
+    ? []
+    : ['AWVP_REGION', 'AWVP_POLICY_STORE_ID', 'AWVP_NAMESPACE']),
 ];
 
 const missingRequiredAppEnvVars = getMissingRequiredEnvVars(requiredAppEnvVars);
@@ -95,6 +98,11 @@ if (missingRequiredEnvVars.length > 0) {
     console.error(`   - ${varName}`);
   });
   console.error('\n💡 Please add these variables to your .env file');
+  process.exit(1);
+}
+
+if (authorizationProvider === 'allow-all' && process.env.NODE_ENV === 'production') {
+  console.error('❌ AUTHORIZATION_PROVIDER=allow-all is not allowed when NODE_ENV=production.');
   process.exit(1);
 }
 
@@ -213,6 +221,13 @@ if (missingRequiredEnvVars.length > 0) {
     {
       provide: AXIS_AUTHORIZATION_SERVICE,
       useFactory: (cfg: ConfigService, appLogger: LoggerInterface): AuthorizationService => {
+        if (authorizationProvider === 'allow-all') {
+          appLogger.warn({
+            message: 'AUTHORIZATION_PROVIDER=allow-all: every AuthorizationGuard check will pass.',
+          });
+          return new AllowAllAuthorizationService();
+        }
+
         const region = cfg.get('AWVP_REGION') as string;
         const policyStoreId = cfg.get('AWVP_POLICY_STORE_ID') as string;
         const namespace = cfg.get('AWVP_NAMESPACE') as string;

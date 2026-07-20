@@ -28,6 +28,7 @@ export class UpdateGovernmentAgencyController {
 
     const result = await this.updateGovernmentAgencyUsecase.execute(idResult.value, {
       name: body.name,
+      status: body.status,
     });
 
     if (!result.ok) {

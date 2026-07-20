@@ -12,6 +12,13 @@ RUN --mount=type=secret,id=github_pat \
     pnpm config set "//npm.pkg.github.com/:_authToken" "$(cat /run/secrets/github_pat)" && \
     pnpm install --frozen-lockfile
 
+# --- dev: hot-reload via nodemon + ts-node; source comes from a bind mount ---
+FROM deps AS dev
+ENV NODE_ENV=development
+EXPOSE 3000
+USER node
+CMD ["pnpm", "run", "start:docker:dev"]
+
 # --- build: compile TypeScript to dist/ ---
 FROM deps AS build
 COPY . .

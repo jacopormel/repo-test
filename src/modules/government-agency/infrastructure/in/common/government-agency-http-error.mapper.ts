@@ -10,13 +10,6 @@ import { CodedInfrastructureError } from '@src/common/infrastructure/error';
 import { GovernmentAgencyMappingError } from '../../../application/error/government-agency-mapping.error';
 import { GovernmentAgencyNotFoundError } from '../../../application/error/government-agency-not-found.error';
 
-/**
- * Shared across create/update/delete controllers. `instanceof` must target the
- * Axis base classes (CodedApplicationNotFoundError, CodedDomainError), not our
- * own subclasses: axis-common-lib's Coded*Error constructors reset `this`'s
- * prototype to their own class, so subclass `instanceof` checks always fail.
- * See AGENTS.md (root of Proyectos/) for the verified gotcha.
- */
 export function mapGovernmentAgencyErrorsToHttpException(
   errors: (CodedDomainError | GovernmentAgencyMappingError | GovernmentAgencyNotFoundError)[],
 ): HttpException {
@@ -29,7 +22,6 @@ export function mapGovernmentAgencyErrorsToHttpException(
   return new InternalServerErrorException(errors);
 }
 
-/** Same mapping rules, for the get-all endpoint's query-validation error union. */
 export function mapGovernmentAgencyQueryErrorsToHttpException(
   errors: (CodedInfrastructureError | GovernmentAgencyMappingError)[],
 ): HttpException {

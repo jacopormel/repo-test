@@ -1,5 +1,6 @@
 import { DateTime, Id } from '@pormeldev/axis-common-lib';
 import { DateTimeTransformer, IdTransformer } from '@pormeldev/axis-service-database-typeorm';
+import { GOVERNMENT_AGENCY_STATUSES } from '@src/modules/government-agency/domain/value-object/government-agency-status.enum';
 import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('government_agencies')
@@ -9,6 +10,14 @@ export class GovernmentAgencyEntity {
 
   @Column({ type: 'varchar' })
   name!: string;
+
+  @Column({
+    type: 'enum',
+    enum: GOVERNMENT_AGENCY_STATUSES,
+    enumName: 'government_agencies_status_enum',
+    default: 'ACTIVE',
+  })
+  status!: string;
 
   @DeleteDateColumn({
     name: 'deleted_at',

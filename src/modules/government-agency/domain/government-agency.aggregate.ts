@@ -5,16 +5,21 @@ import {
   errorResult,
   Id,
   okResult,
-  PatchAccumulator,
   Result,
+  unwrapResult,
+  ValidatedPatchBuilder,
 } from '@src/common';
 import { GovernmentAgencyAlreadyDeletedError } from './error/government-agency-already-deleted.error';
 import { GovernmentAgencyName } from './value-object/government-agency-name.value';
+import { GovernmentAgencyStatus } from './value-object/government-agency-status.value';
 
 interface GovernmentAgencyProps {
   name: GovernmentAgencyName;
+  status: GovernmentAgencyStatus;
   deletedAt?: DateTime;
 }
+
+type GovernmentAgencyPatch = Pick<GovernmentAgencyProps, 'name' | 'status'>;
 
 export class GovernmentAgency extends AggregateRoot<Id> {
   private readonly props: GovernmentAgencyProps;
@@ -24,34 +29,54 @@ export class GovernmentAgency extends AggregateRoot<Id> {
     this.props = props;
   }
 
-  static create(input: { name: string }): Result<GovernmentAgency, CodedDomainError> {
-    const nameResult = GovernmentAgencyName.create(input.name);
-    if (!nameResult.ok) {
-      return errorResult(nameResult.errors);
+  static create(input: {
+    name: string;
+    status?: string;
+  }): Result<GovernmentAgency, CodedDomainError> {
+    const errors: CodedDomainError[] = [];
+    const name = unwrapResult(GovernmentAgencyName.create(input.name), errors);
+    const status = unwrapResult(GovernmentAgencyStatus.create(input.status ?? null), errors);
+
+    if (name === undefined || status === undefined) {
+      return errorResult(errors);
     }
 
-    return okResult(new GovernmentAgency(Id.create(), { name: nameResult.value }));
+    return okResult(new GovernmentAgency(Id.create(), { name, status }));
   }
 
-  static reconstitute(id: string, props: { name: string; deletedAt?: DateTime }): GovernmentAgency {
+  static reconstitute(
+    id: string,
+    props: { name: string; status: string; deletedAt?: DateTime },
+  ): GovernmentAgency {
     return new GovernmentAgency(Id.reconstitute(id), {
       name: GovernmentAgencyName.reconstitute(props.name),
+      status: GovernmentAgencyStatus.reconstitute(props.status),
       deletedAt: props.deletedAt,
     });
   }
 
-  update(changes: { name?: string }): Result<void, CodedDomainError> {
+  update(changes: { name?: string; status?: string }): Result<void, CodedDomainError> {
     if (this.isDeleted()) {
       return errorResult([new GovernmentAgencyAlreadyDeletedError()]);
     }
 
-    const patch = new PatchAccumulator<CodedDomainError>();
+    const patchResult = new ValidatedPatchBuilder<GovernmentAgencyPatch, CodedDomainError>()
+      .add('name', changes.name, GovernmentAgencyName.create)
+      .add('status', changes.status, GovernmentAgencyStatus.create)
+      .toResult();
 
-    patch.apply(changes.name, GovernmentAgencyName.create, (value) => {
-      this.props.name = value;
-    });
+    if (!patchResult.ok) {
+      return errorResult(patchResult.errors);
+    }
 
-    return patch.toResult();
+    if (patchResult.value.name !== undefined) {
+      this.props.name = patchResult.value.name;
+    }
+    if (patchResult.value.status !== undefined) {
+      this.props.status = patchResult.value.status;
+    }
+
+    return okResult(undefined);
   }
 
   markAsDeleted(): Result<void, CodedDomainError> {
@@ -64,11 +89,15 @@ export class GovernmentAgency extends AggregateRoot<Id> {
   }
 
   isDeleted(): boolean {
-    return this.props.deletedAt !== undefined;
+    return this.props.deletedAt !== undefined && this.props.deletedAt !== null;
   }
 
   get name(): GovernmentAgencyName {
     return this.props.name;
+  }
+
+  get status(): GovernmentAgencyStatus {
+    return this.props.status;
   }
 
   get deletedAt(): DateTime | undefined {

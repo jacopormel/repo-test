@@ -22,7 +22,10 @@ export class CreateGovernmentAgencyController {
   async create(
     @Body() body: CreateGovernmentAgencyRequestDto,
   ): Promise<{ data: CreateGovernmentAgencyResponseDto }> {
-    const result = await this.createGovernmentAgencyUsecase.execute({ name: body.name });
+    const result = await this.createGovernmentAgencyUsecase.execute({
+      name: body.name,
+      status: body.status,
+    });
 
     if (!result.ok) {
       throw mapGovernmentAgencyErrorsToHttpException(result.errors);

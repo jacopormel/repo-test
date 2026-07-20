@@ -19,7 +19,7 @@ describe('CreateGovernmentAgencyUsecase', () => {
     repository.save.mockResolvedValue(okResult(savedId) as Result<Id, GovernmentAgencyMappingError>);
     const usecase = new CreateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute({ name: 'Ministry of Health' });
+    const result = await usecase.execute({ name: 'Ministry of Health', status: 'ACTIVE' });
 
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -34,7 +34,7 @@ describe('CreateGovernmentAgencyUsecase', () => {
     const repository = createRepositoryMock();
     const usecase = new CreateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute({ name: 'short' });
+    const result = await usecase.execute({ name: 'short', status: 'ACTIVE' });
 
     expect(result.ok).toBe(false);
     expect(repository.save).not.toHaveBeenCalled();
@@ -46,7 +46,7 @@ describe('CreateGovernmentAgencyUsecase', () => {
     repository.save.mockResolvedValue({ ok: false, errors: [mappingError] });
     const usecase = new CreateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute({ name: 'Ministry of Health' });
+    const result = await usecase.execute({ name: 'Ministry of Health', status: 'ACTIVE' });
 
     expect(result.ok).toBe(false);
     if (!result.ok) {

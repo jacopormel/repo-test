@@ -42,6 +42,15 @@ describe('GovernmentAgencyName', () => {
         expect(result.errors[0].code).toBe('INVALID_STRING');
       }
     });
+
+    it('rejects null even though the base StringValue allows it, because name is required', () => {
+      const result = GovernmentAgencyName.create(null);
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors[0].code).toBe('AGENCY_NAME_REQUIRED');
+      }
+    });
   });
 
   describe('reconstitute', () => {
