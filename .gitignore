@@ -46,6 +46,9 @@ lerna-debug.log*
 .temp
 .tmp
 
+# graphify knowledge graph output
+/graphify-out
+
 # Runtime data
 pids
 *.pid

@@ -2,7 +2,7 @@ import { DateTime } from '@src/common';
 import { GovernmentAgency } from '../government-agency.aggregate';
 
 function createValidAgency(): GovernmentAgency {
-  const result = GovernmentAgency.create({ name: 'Ministry of Health' });
+  const result = GovernmentAgency.create({ name: 'Ministry of Health', status: 'ACTIVE' });
   if (!result.ok) {
     throw new Error('expected a valid agency');
   }
@@ -11,30 +11,77 @@ function createValidAgency(): GovernmentAgency {
 
 describe('GovernmentAgency', () => {
   describe('create', () => {
-    it('creates an agency with the given name and no deletedAt', () => {
-      const result = GovernmentAgency.create({ name: 'Ministry of Health' });
+    it('creates an agency with the given name and status and no deletedAt', () => {
+      const result = GovernmentAgency.create({
+        name: 'Ministry of Health',
+        status: 'ACTIVE',
+      });
 
       expect(result.ok).toBe(true);
       if (result.ok) {
         expect(result.value.name.value).toBe('Ministry of Health');
+        expect(result.value.status.value).toBe('ACTIVE');
+        expect(result.value.status.isActive()).toBe(true);
         expect(result.value.isDeleted()).toBe(false);
         expect(result.value.deletedAt).toBeUndefined();
       }
     });
 
+    it('creates an agency with an explicit INACTIVE status', () => {
+      const result = GovernmentAgency.create({ name: 'Ministry of Health', status: 'INACTIVE' });
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.status.value).toBe('INACTIVE');
+        expect(result.value.status.isActive()).toBe(false);
+      }
+    });
+
     it('rejects an invalid name', () => {
-      const result = GovernmentAgency.create({ name: 'short' });
+      const result = GovernmentAgency.create({ name: 'short', status: 'ACTIVE' });
 
       expect(result.ok).toBe(false);
+    });
+
+    it('rejects an invalid status', () => {
+      const result = GovernmentAgency.create({ name: 'Ministry of Health', status: 'DELETED' });
+
+      expect(result.ok).toBe(false);
+    });
+
+    it('rejects an omitted status', () => {
+      const result = GovernmentAgency.create({ name: 'Ministry of Health' });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors[0].code).toBe('INVALID_ENUM_VALUE');
+      }
+    });
+
+    it('accumulates errors from both name and status instead of stopping at the first one', () => {
+      const result = GovernmentAgency.create({ name: 'short', status: 'DELETED' });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors).toHaveLength(2);
+        expect(result.errors.map((error) => error.code)).toEqual(
+          expect.arrayContaining(['AGENCY_NAME_TOO_SHORT', 'INVALID_ENUM_VALUE']),
+        );
+      }
     });
   });
 
   describe('reconstitute', () => {
-    it('restores id, name and deletedAt without validating', () => {
+    it('restores id, name, status and deletedAt without validating', () => {
       const deletedAt = DateTime.now();
-      const agency = GovernmentAgency.reconstitute('short', { name: 'short', deletedAt });
+      const agency = GovernmentAgency.reconstitute('short', {
+        name: 'short',
+        status: 'INACTIVE',
+        deletedAt,
+      });
 
       expect(agency.name.value).toBe('short');
+      expect(agency.status.value).toBe('INACTIVE');
       expect(agency.deletedAt).toBe(deletedAt);
       expect(agency.isDeleted()).toBe(true);
     });
@@ -48,6 +95,38 @@ describe('GovernmentAgency', () => {
 
       expect(result.ok).toBe(true);
       expect(agency.name.value).toBe('Ministry of Education');
+    });
+
+    it('applies a valid status change', () => {
+      const agency = createValidAgency();
+
+      const result = agency.update({ status: 'INACTIVE' });
+
+      expect(result.ok).toBe(true);
+      expect(agency.status.value).toBe('INACTIVE');
+      expect(agency.status.isActive()).toBe(false);
+    });
+
+    it('rejects an invalid status and leaves the aggregate unchanged', () => {
+      const agency = createValidAgency();
+
+      const result = agency.update({ status: 'DELETED' });
+
+      expect(result.ok).toBe(false);
+      expect(agency.status.value).toBe('ACTIVE');
+    });
+
+    it('does not apply valid fields when another field is invalid', () => {
+      const agency = createValidAgency();
+
+      const result = agency.update({
+        name: 'Ministry of Education',
+        status: 'DELETED',
+      });
+
+      expect(result.ok).toBe(false);
+      expect(agency.name.value).toBe('Ministry of Health');
+      expect(agency.status.value).toBe('ACTIVE');
     });
 
     it('is a no-op when no fields are provided (PATCH semantics)', () => {

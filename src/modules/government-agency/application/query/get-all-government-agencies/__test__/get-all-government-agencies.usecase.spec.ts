@@ -18,7 +18,7 @@ function createValidQuery(): QueryDto {
 describe('GetAllGovernmentAgenciesUsecase', () => {
   it('delegates to the query port and returns its paged result', async () => {
     const queryPort = createQueryPortMock();
-    const agencies = [new GovernmentAgencyDto('id-1', 'Ministry of Health')];
+    const agencies = [new GovernmentAgencyDto('id-1', 'Ministry of Health', 'ACTIVE')];
     queryPort.findAll.mockResolvedValue(
       okPagedResult(agencies, { pageNumber: 1, pageSize: 10, totalRecords: 1, totalPages: 1 }),
     );

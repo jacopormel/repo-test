@@ -11,6 +11,7 @@ export class GetAllGovernmentAgenciesMapper {
       const dto = new GovernmentAgencyResponseDto();
       dto.id = agency.id;
       dto.name = agency.name;
+      dto.status = agency.status;
       return dto;
     });
 

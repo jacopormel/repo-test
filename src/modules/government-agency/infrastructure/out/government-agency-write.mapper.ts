@@ -10,6 +10,7 @@ export class GovernmentAgencyWriteMapper {
     const entity = new GovernmentAgencyEntity();
     entity.id = domain.getId();
     entity.name = domain.name.value;
+    entity.status = domain.status.value;
     entity.deletedAt = domain.deletedAt;
     return okResult(entity);
   }
@@ -20,6 +21,7 @@ export class GovernmentAgencyWriteMapper {
     return okResult(
       GovernmentAgency.reconstitute(entity.id.toString(), {
         name: entity.name,
+        status: entity.status,
         deletedAt: entity.deletedAt,
       }),
     );

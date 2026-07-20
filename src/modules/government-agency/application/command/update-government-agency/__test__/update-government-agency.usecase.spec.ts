@@ -13,7 +13,7 @@ function createRepositoryMock(): jest.Mocked<GovernmentAgencyRepositoryPort> {
 }
 
 function createAgency(): GovernmentAgency {
-  const result = GovernmentAgency.create({ name: 'Ministry of Health' });
+  const result = GovernmentAgency.create({ name: 'Ministry of Health', status: 'ACTIVE' });
   if (!result.ok) {
     throw new Error('expected a valid agency');
   }
