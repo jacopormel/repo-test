@@ -38,7 +38,6 @@ export async function createAppInstance(): Promise<NestFastifyApplication> {
 
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  // Logging HTTP via interceptor
   const axisLogger = app.get<LoggerInterface>(AXIS_LOGGER);
   app.useGlobalInterceptors(new HttpRequestLogInterceptor(axisLogger));
 
@@ -57,10 +56,9 @@ export async function createAppInstance(): Promise<NestFastifyApplication> {
       forbidNonWhitelisted: true,
       transform: true,
       exceptionFactory: (errors) => {
-        // Mapear errores de validación a CodedInfrastructureError
         const codedErrors = mapValidationErrorsToCodedInfrastructureErrors(errors);
 
-        // Formatear para BadRequestException (mantiene compatibilidad con el filtro)
+        // Formatted to keep shape compatible with the existing global exception filter.
         const formattedErrors = codedErrors.map((error) => ({
           field: error.field,
           error: error.message,

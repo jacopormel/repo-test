@@ -1,17 +1,20 @@
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import {
   ApiJsonApiController,
   ApiJsonApiFindByQuery,
   QueryDtoDecorator,
 } from '@pormeldev/axis-nestjs-common';
 import { QueryDto } from '@src/common';
-import { CodedInfrastructureError } from '@src/common/infrastructure/error';
+import { AuthorizationGuard } from '@src/common/infrastructure/authorization/authorization.guard';
+import { RequirePermission } from '@src/common/infrastructure/authorization/require-permission.decorator';
 import { governmentAgencyFindByQueryDefinition } from '@src/modules/government-agency/application/query/get-all-government-agencies/get-all-government-agencies.definition';
 import { GetAllGovernmentAgenciesUsecase } from '@src/modules/government-agency/application/query/get-all-government-agencies/get-all-government-agencies.usecase';
+import { mapGovernmentAgencyQueryErrorsToHttpException } from '../common/government-agency-http-error.mapper';
 import { GovernmentAgencyResponseDto } from '../common/government-agency.response.dto';
 import { GetAllGovernmentAgenciesMapper } from './get-all-government-agencies.mapper';
 
 @ApiJsonApiController('government-agencies')
+@UseGuards(AuthorizationGuard)
 export class GetAllGovernmentAgenciesController {
   constructor(private readonly getAllGovernmentAgenciesUsecase: GetAllGovernmentAgenciesUsecase) {}
 
@@ -22,17 +25,12 @@ export class GetAllGovernmentAgenciesController {
     notFoundErrorForEmptyResponse: false,
     ...governmentAgencyFindByQueryDefinition,
   })
+  @RequirePermission('ListGovernmentAgencies', 'GovernmentAgency')
   async getAll(@QueryDtoDecorator() query: QueryDto) {
     const result = await this.getAllGovernmentAgenciesUsecase.execute(query);
 
     if (!result.ok) {
-      const isQueryValidationError = result.errors.every(
-        (error) => error instanceof CodedInfrastructureError,
-      );
-      if (isQueryValidationError) {
-        throw new BadRequestException(result.errors);
-      }
-      throw new InternalServerErrorException(result.errors);
+      throw mapGovernmentAgencyQueryErrorsToHttpException(result.errors);
     }
 
     return GetAllGovernmentAgenciesMapper.mapFindAllSuccessResultToHttpResponse(

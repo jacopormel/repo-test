@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv';
 
-// Load base environment from .env without logging
 dotenv.config({ path: '.env', quiet: true });
 
 // Ensure DB name used by tests has the _test suffix to avoid clobbering dev DB

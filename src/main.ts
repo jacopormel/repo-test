@@ -15,7 +15,6 @@ async function bootstrap() {
 
   const app = await createAppInstance();
 
-  // Configuración de Swagger
   const config = new DocumentBuilder()
     .setTitle(process.env.APP_TITLE || 'API de Ejemplo')
     .setDescription(
@@ -27,7 +26,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  // agregar headers axis
   const validMethods: (keyof PathItem)[] = [
     'get',
     'post',

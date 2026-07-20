@@ -1,4 +1,4 @@
-import { errorResult, Id, Result } from '@src/common';
+import { CodedDomainError, errorResult, Id, Result } from '@src/common';
 import { GovernmentAgencyMappingError } from '../../error/government-agency-mapping.error';
 import { GovernmentAgencyNotFoundError } from '../../error/government-agency-not-found.error';
 import { GovernmentAgencyRepositoryPort } from '../../port/out/government-agency-repository.port';
@@ -8,14 +8,19 @@ export class DeleteGovernmentAgencyUsecase {
 
   async execute(
     id: Id,
-  ): Promise<Result<void, GovernmentAgencyMappingError | GovernmentAgencyNotFoundError>> {
+  ): Promise<
+    Result<void, CodedDomainError | GovernmentAgencyMappingError | GovernmentAgencyNotFoundError>
+  > {
     const agencyResult = await this.governmentAgencyRepository.findById(id);
     if (!agencyResult.ok) {
       return errorResult(agencyResult.errors);
     }
 
     const agency = agencyResult.value;
-    agency.markAsDeleted();
+    const markAsDeletedResult = agency.markAsDeleted();
+    if (!markAsDeletedResult.ok) {
+      return errorResult(markAsDeletedResult.errors);
+    }
 
     return await this.governmentAgencyRepository.patch(agency);
   }
