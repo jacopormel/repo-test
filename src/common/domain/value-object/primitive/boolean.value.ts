@@ -3,22 +3,27 @@ import { errorResult, okResult, Result } from '../../result';
 import { PrimitiveValue } from '../primitive-value';
 
 export class BooleanValue extends PrimitiveValue<boolean> {
-  protected constructor(value: boolean | null) {
-    super(value);
-  }
-
-  static create(value: boolean | null | undefined): Result<BooleanValue, CodedDomainError> {
-    if (value === undefined) {
-      return errorResult([
-        new CodedDomainError('BooleanValue cannot be undefined', 'value', 'INVALID_BOOLEAN'),
-      ]);
+  protected static validate(
+    value: boolean | null | undefined,
+  ): Result<boolean | null, CodedDomainError> {
+    const base = super.validate(value, 'INVALID_BOOLEAN');
+    if (!base.ok) {
+      return base;
     }
-    if (value !== null && typeof value !== 'boolean') {
+    if (base.value !== null && typeof base.value !== 'boolean') {
       return errorResult([
         new CodedDomainError('BooleanValue requires a boolean', 'value', 'INVALID_BOOLEAN'),
       ]);
     }
-    return okResult(new BooleanValue(value));
+    return okResult(base.value);
+  }
+
+  static create(value: boolean | null | undefined): Result<BooleanValue, CodedDomainError> {
+    const validated = BooleanValue.validate(value);
+    if (!validated.ok) {
+      return errorResult(validated.errors);
+    }
+    return okResult(new BooleanValue(validated.value));
   }
 
   static reconstitute(value: boolean | null): BooleanValue {

@@ -31,7 +31,7 @@ describe('GovernmentAgencyStatus', () => {
     });
 
     it('rejects null even though the base EnumValue allows it, because status is required', () => {
-      const result = GovernmentAgencyStatus.create(null);
+      const result = GovernmentAgencyStatus.create(null as unknown as string);
 
       expect(result.ok).toBe(false);
       if (!result.ok) {

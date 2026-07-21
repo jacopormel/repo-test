@@ -29,88 +29,30 @@ src/
 `Entity`, `AggregateRoot` y `ValueObject` se reexportan desde
 `@pormeldev/axis-ddd-core`; no hay implementaciones locales paralelas. Los VOs
 primitivos disponibles son `StringValue`, `NumberValue`, `IntValue`,
-`BooleanValue` y `EnumValue` — todos envuelven `T | null` (ver la convención
-de `null`/`undefined` más abajo). Los decimales, fechas e IDs usan
-directamente `Decimal`, `DateOnly`, `DateTime` e `Id` de
-`@pormeldev/axis-common-lib`.
+`BooleanValue` y `EnumValue`. Los decimales, fechas e IDs usan directamente
+`Decimal`, `DateOnly`, `DateTime` e `Id` de `@pormeldev/axis-common-lib`.
 
-Los enums tienen su propia clase en la jerarquía: `EnumValue<TValues>` extiende
-`PrimitiveValue<TValues[number]>` y expone `protected static validate()`, que
-delega el chequeo de membership (`value` pertenece a `allowedValues`) en el
-helper `createEnumValue()`. El VO de dominio concreto extiende
-`EnumValue<typeof MIS_VALORES>` y llama a `MiEnum.validate(value, MIS_VALORES,
-(v) => new MiEnum(v))` desde su propio `create()`, igual que
-`GovernmentAgencyStatus` hace con `GOVERNMENT_AGENCY_STATUSES`:
+Los VOs primitivos son nullable por default (`T | null`) y rechazan
+`undefined` siempre; un VO de dominio concreto que nunca puede estar vacío
+(como `GovernmentAgencyName`/`GovernmentAgencyStatus`, columnas NOT NULL de
+su tabla) opta explícitamente por lo contrario agregando su propio chequeo en
+`validate()`. Ver `src/common/domain/value-object/primitive-value.ts` y
+`government-agency-name.value.ts` para el patrón completo (`validate()`
+valida, `create()` es el único que construye).
 
-```ts
-export const GOVERNMENT_AGENCY_STATUSES = ['ACTIVE', 'INACTIVE'] as const;
-export type GovernmentAgencyStatusType = (typeof GOVERNMENT_AGENCY_STATUSES)[number];
-
-export class GovernmentAgencyStatus extends EnumValue<typeof GOVERNMENT_AGENCY_STATUSES> {
-  static create(value: string | null): Result<GovernmentAgencyStatus, CodedDomainError> {
-    if (value === null) {
-      return errorResult([
-        new CodedDomainError('Agency status is required', 'status', 'INVALID_ENUM_VALUE'),
-      ]);
-    }
-    return GovernmentAgencyStatus.validate(
-      value,
-      GOVERNMENT_AGENCY_STATUSES,
-      (v) => new GovernmentAgencyStatus(v),
-    );
-  }
-
-  static reconstitute(value: string): GovernmentAgencyStatus {
-    return new GovernmentAgencyStatus(value as GovernmentAgencyStatusType);
-  }
-}
-```
-
-```ts
-import { StringValue } from '@src/common';
-
-export class GovernmentAgencyName extends StringValue {}
-```
-
-### Convención: `null` sí, `undefined` no, en VOs primitivos
-
-Los VOs primitivos (`StringValue`, `NumberValue`, `IntValue`, `BooleanValue`,
-`EnumValue`) envuelven `T | null` y su `create()`/`reconstitute()` **siempre**
-rechazan `undefined` — es una señal ambiental de JS/TS (clave ausente,
-variable no inicializada), nunca un valor de dominio válido. `null`, en
-cambio, sí es un valor válido por default: representa "sin valor" de forma
-explícita, y por eso el VO base lo deja pasar sin correr su chequeo de tipo
-(`typeof`/membership).
-
-Un VO de dominio concreto que **nunca** puede estar vacío (como
-`GovernmentAgencyName` o `GovernmentAgencyStatus`, ambos NOT NULL en la
-tabla) tiene que optar explícitamente por lo contrario, repitiendo este par:
-
-1. Guard al principio de `create()`: `if (value === null) return errorResult([...])`.
-2. Override de `get value()` que le saca el `| null` al tipo heredado (`return super.value as T`), para que el resto del código (mappers, `isActive()`, etc.) no tenga que manejar un `null` que en la práctica nunca va a ocurrir.
-
-Con solo dos VOs "obligatorios" en el repo no vale la pena abstraer este par
-en una clase base (`RequiredStringValue`, etc.) — si aparece un tercero,
-extraerlo ahí. En los boundaries (aggregate, DTOs), el `undefined` ambiental
-(clave opcional ausente) se convierte explícitamente en `null` antes de
-llegar al VO, nunca se lo deja pasar tal cual — ver
-`GovernmentAgencyStatus.create(input.status ?? null)` en
-`government-agency.aggregate.ts`.
-
-En los DTOs de HTTP (`class-validator`), `@IsOptional()` trata `null` igual
-que "ausente" y saltea el resto de validadores — dejaría pasar un
-`{"name": null}` explícito sin validar. Por eso los campos opcionales de los
-DTOs de este módulo usan `@ValidateIf((dto) => dto.campo !== undefined)` en
-vez de `@IsOptional()`: solo la clave ausente saltea la validación: un
-`null` explícito sigue corriendo `@IsString()`/`@IsIn()` y se rechaza ahí,
-con un 400 de validación normal en vez de llegar como error de dominio.
+El código bajo `domain/` importa de `@src/common/domain` (no del barrel
+completo `@src/common`), para que la capa quede explícita en el import;
+`application/`/`infrastructure/` usan `@src/common`. Ningún archivo importa
+`@pormeldev/*` directo salvo los wrappers en `common/domain/*`,
+`common/application/*` y `common/infrastructure/*`.
 
 Ejemplo real ya presente en el repo: `src/modules/government-agency/` implementa
 un CRUD completo (`GET`/`POST`/`PATCH`/`DELETE /government-agencies`) siguiendo
 el patrón hexagonal + CQRS de Axis, y sirve como referencia para features nuevas:
 
-- **Domain**: aggregate `GovernmentAgency` con un único VO (`GovernmentAgencyName`,
-  mínimo 10 caracteres), `create()`/`reconstitute()` + `Result`, y borrado lógico
+- **Domain**: aggregate `GovernmentAgency` con dos VOs requeridos
+  (`GovernmentAgencyName`, mínimo 10 caracteres; `GovernmentAgencyStatus`, enum
+  `ACTIVE`/`INACTIVE`), `create()`/`reconstitute()` + `Result`, y borrado lógico
   (`markAsDeleted()`/`deletedAt`).
 - **Application**: `query/` (lectura, `BaseQueryRepository`) y `command/`
   (escritura, `BaseRepository`) separados; cada usecase vive en su propia carpeta
@@ -240,10 +182,12 @@ insertar), así que correrlo más de una vez no duplica datos.
 
 - **Automático al arrancar**: si `RUN_SEEDS_ON_STARTUP=true` (default en
   `.env`/`.env.example`, pensado para desarrollo local), `AppModule.onModuleInit()`
-  corre todos los seeds disponibles. Esto incluye levantar la API vía
-  `docker compose up`, ya que el servicio `api` lee el mismo `.env`.
+  corre todos los seeds disponibles. Rechazado al arrancar si `NODE_ENV=production`
+  (ver `app.module.ts`).
 - **Manual**: `pnpm run seed:run` (usa `src/common/seed/seed.command.ts`, un
-  contexto de Nest standalone fuera del ciclo de vida HTTP).
+  contexto de Nest standalone fuera del ciclo de vida HTTP). También rechaza
+  correr si `NODE_ENV=production` — independiente de `RUN_SEEDS_ON_STARTUP`,
+  ya que este comando no lo consulta.
 
 Agregar un seed nuevo: crear `src/common/seed/data/<nombre>.seed.ts`
 implementando `SeedInterface`, y sumarlo al array que devuelve
@@ -328,22 +272,3 @@ curl -s \
   del archivo. Coincide con la convención real de `edenor-investment-backend` y
   `volcan-pae-backend`.
 - E2E: configuración en `jest-e2e.json` (raíz del repo); specs `*.e2e-spec.ts` bajo `src/**/__test__/`.
-
-## Registro de mejoras
-
-Decisiones de diseño y correcciones que se van aplicando al template, con la
-razón detrás (no solo el qué). Nuevas entradas arriba.
-
-- **2026-07-20 — VOs primitivos rechazan `undefined`, aceptan `null` por
-  default.** `StringValue`/`NumberValue`/`IntValue`/`BooleanValue`/`EnumValue`
-  ahora envuelven `T | null`; `create()`/`reconstitute()` siempre rechazan
-  `undefined` (nunca es un valor de dominio válido) y aceptan `null` sin
-  correr el chequeo de tipo. Los VOs que nunca pueden estar vacíos
-  (`GovernmentAgencyName`, `GovernmentAgencyStatus`) optan explícitamente por
-  lo contrario con un guard de `null` en `create()` + override de `get
-  value()`. Ver la sección "Convención: `null` sí, `undefined` no" más
-  arriba. De paso se corrigió el boundary del aggregate
-  (`GovernmentAgencyStatus.create(input.status ?? null)`, antes dejaba pasar
-  `undefined` directo al VO) y los DTOs de HTTP (`@ValidateIf` en vez de
-  `@IsOptional()`, para que un `null` explícito en el body siga validándose
-  y no se cuele silenciosamente hasta el dominio).

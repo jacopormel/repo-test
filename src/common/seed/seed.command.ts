@@ -7,6 +7,12 @@ import { SeedService } from './seed.service';
 
 async function runSeeds() {
   const logger = new Logger('SeedCommand');
+
+  if (process.env.NODE_ENV === 'production') {
+    logger.error('Seeds cannot be run manually when NODE_ENV=production.');
+    process.exit(1);
+  }
+
   const app = await NestFactory.createApplicationContext(AppModule);
 
   try {

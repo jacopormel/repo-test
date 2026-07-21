@@ -44,7 +44,7 @@ describe('GovernmentAgencyName', () => {
     });
 
     it('rejects null even though the base StringValue allows it, because name is required', () => {
-      const result = GovernmentAgencyName.create(null);
+      const result = GovernmentAgencyName.create(null as unknown as string);
 
       expect(result.ok).toBe(false);
       if (!result.ok) {

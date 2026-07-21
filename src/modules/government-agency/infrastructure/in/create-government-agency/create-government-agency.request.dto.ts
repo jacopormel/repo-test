@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GOVERNMENT_AGENCY_STATUSES } from '@src/modules/government-agency/domain/value-object/government-agency-status.enum';
-import { IsIn, IsNotEmpty, IsString, MinLength, ValidateIf } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateGovernmentAgencyRequestDto {
   @ApiProperty({
@@ -17,11 +17,7 @@ export class CreateGovernmentAgencyRequestDto {
     description: 'Government agency status',
     example: 'ACTIVE',
     enum: GOVERNMENT_AGENCY_STATUSES,
-    required: false,
   })
-  // ValidateIf (not IsOptional) so an explicit null is still validated and
-  // rejected by IsIn - only an omitted key skips validation.
-  @ValidateIf((dto) => dto.status !== undefined)
   @IsIn(GOVERNMENT_AGENCY_STATUSES)
-  status?: string;
+  status!: string;
 }

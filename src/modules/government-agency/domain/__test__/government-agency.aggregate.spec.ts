@@ -1,4 +1,4 @@
-import { DateTime } from '@src/common';
+import { DateTime } from '@src/common/domain';
 import { GovernmentAgency } from '../government-agency.aggregate';
 
 function createValidAgency(): GovernmentAgency {
@@ -49,8 +49,11 @@ describe('GovernmentAgency', () => {
       expect(result.ok).toBe(false);
     });
 
-    it('rejects an omitted status', () => {
-      const result = GovernmentAgency.create({ name: 'Ministry of Health' });
+    it('rejects a status that violates the string contract at runtime (non-TS caller)', () => {
+      const result = GovernmentAgency.create({
+        name: 'Ministry of Health',
+        status: undefined as unknown as string,
+      });
 
       expect(result.ok).toBe(false);
       if (!result.ok) {

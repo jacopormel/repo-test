@@ -1,25 +1,19 @@
-import { CodedDomainError, errorResult, okResult, Result, StringValue } from '@src/common';
+import { CodedDomainError, errorResult, okResult, Result, StringValue } from '@src/common/domain';
 
 const MIN_LENGTH = 10;
 
 export class GovernmentAgencyName extends StringValue {
-  public override get value(): string {
-    return super.value as string;
-  }
-
-  static create(value: string | null): Result<GovernmentAgencyName, CodedDomainError> {
-    if (value === null) {
+  protected static validate(value: string | null): Result<string, CodedDomainError> {
+    const base = super.validate(value);
+    if (!base.ok) {
+      return base;
+    }
+    if (base.value === null) {
       return errorResult([
         new CodedDomainError('Agency name is required', 'name', 'AGENCY_NAME_REQUIRED'),
       ]);
     }
-
-    const stringResult = StringValue.create(value);
-    if (!stringResult.ok) {
-      return errorResult(stringResult.errors);
-    }
-
-    if (value.length < MIN_LENGTH) {
+    if (base.value.length < MIN_LENGTH) {
       return errorResult([
         new CodedDomainError(
           `Agency name must be at least ${MIN_LENGTH} characters long`,
@@ -28,7 +22,15 @@ export class GovernmentAgencyName extends StringValue {
         ),
       ]);
     }
-    return okResult(new GovernmentAgencyName(value));
+    return okResult(base.value);
+  }
+
+  static create(value: string): Result<GovernmentAgencyName, CodedDomainError> {
+    const validated = GovernmentAgencyName.validate(value);
+    if (!validated.ok) {
+      return validated;
+    }
+    return okResult(new GovernmentAgencyName(validated.value));
   }
 
   static reconstitute(value: string): GovernmentAgencyName {
