@@ -9,8 +9,11 @@ export class GovernmentAgencyWriteMapper {
   ): Result<GovernmentAgencyEntity, GovernmentAgencyMappingError> {
     const entity = new GovernmentAgencyEntity();
     entity.id = domain.getId();
-    entity.name = domain.name.value;
-    entity.status = domain.status.value;
+    // name/status are guaranteed non-null by GovernmentAgencyName/GovernmentAgencyStatus
+    // (create() never accepts null, reconstitute() never receives it) - the ! just
+    // reflects that invariant, it isn't re-validated here.
+    entity.name = domain.name.value!;
+    entity.status = domain.status.value!;
     entity.deletedAt = domain.deletedAt;
     return okResult(entity);
   }

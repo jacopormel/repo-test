@@ -1,4 +1,4 @@
-import type { PaginationMetadata } from '@pormeldev/axis-common-lib';
+import type { PaginationMetadata } from '@src/common';
 import { GovernmentAgencyDto } from '@src/modules/government-agency/application/dto/government-agency.dto';
 import { GovernmentAgencyResponseDto } from '../common/government-agency.response.dto';
 

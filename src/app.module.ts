@@ -38,7 +38,6 @@ import {
   TypeOrmTransactionAdapter,
 } from '@pormeldev/axis-service-database-typeorm';
 import { AXIS_LOGGER, LoggerInterface, LogLevel } from '@pormeldev/axis-service-logger';
-import { AllowAllAuthorizationService } from '@src/common/infrastructure/authorization/allow-all-authorization.service';
 import {
   buildBaseOrmConfig,
   buildPostgresOptionsFromConfig,
@@ -46,6 +45,7 @@ import {
   readSlavesConfigFromConfig,
   shouldEnableReplication,
 } from '@src/common/config/db-config';
+import { AllowAllAuthorizationService } from '@src/common/infrastructure/authorization/allow-all-authorization.service';
 import { DataSource } from 'typeorm';
 import { configureTransactionContext } from './common/config/transaction-context.config';
 import { SeedService } from './common/seed/seed.service';
@@ -103,6 +103,14 @@ if (missingRequiredEnvVars.length > 0) {
 
 if (authorizationProvider === 'allow-all' && process.env.NODE_ENV === 'production') {
   console.error('❌ AUTHORIZATION_PROVIDER=allow-all is not allowed when NODE_ENV=production.');
+  process.exit(1);
+}
+
+if (
+  (process.env.RUN_SEEDS_ON_STARTUP || '').toLowerCase() === 'true' &&
+  process.env.NODE_ENV === 'production'
+) {
+  console.error('❌ RUN_SEEDS_ON_STARTUP=true is not allowed when NODE_ENV=production.');
   process.exit(1);
 }
 

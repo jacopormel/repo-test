@@ -3,22 +3,27 @@ import { errorResult, okResult, Result } from '../../result';
 import { PrimitiveValue } from '../primitive-value';
 
 export class NumberValue extends PrimitiveValue<number> {
-  protected constructor(value: number | null) {
-    super(value);
-  }
-
-  static create(value: number | null | undefined): Result<NumberValue, CodedDomainError> {
-    if (value === undefined) {
-      return errorResult([
-        new CodedDomainError('NumberValue cannot be undefined', 'value', 'INVALID_NUMBER'),
-      ]);
+  protected static validate(
+    value: number | null | undefined,
+  ): Result<number | null, CodedDomainError> {
+    const base = super.validate(value, 'INVALID_NUMBER');
+    if (!base.ok) {
+      return base;
     }
-    if (value !== null && (typeof value !== 'number' || !Number.isFinite(value))) {
+    if (base.value !== null && (typeof base.value !== 'number' || !Number.isFinite(base.value))) {
       return errorResult([
         new CodedDomainError('NumberValue requires a finite number', 'value', 'INVALID_NUMBER'),
       ]);
     }
-    return okResult(new NumberValue(value));
+    return okResult(base.value);
+  }
+
+  static create(value: number | null | undefined): Result<NumberValue, CodedDomainError> {
+    const validated = NumberValue.validate(value);
+    if (!validated.ok) {
+      return errorResult(validated.errors);
+    }
+    return okResult(new NumberValue(validated.value));
   }
 
   static reconstitute(value: number | null): NumberValue {

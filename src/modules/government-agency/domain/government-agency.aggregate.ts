@@ -8,7 +8,7 @@ import {
   Result,
   unwrapResult,
   ValidatedPatchBuilder,
-} from '@src/common';
+} from '@src/common/domain';
 import { GovernmentAgencyAlreadyDeletedError } from './error/government-agency-already-deleted.error';
 import { GovernmentAgencyName } from './value-object/government-agency-name.value';
 import { GovernmentAgencyStatus } from './value-object/government-agency-status.value';
@@ -31,11 +31,11 @@ export class GovernmentAgency extends AggregateRoot<Id> {
 
   static create(input: {
     name: string;
-    status?: string;
+    status: string;
   }): Result<GovernmentAgency, CodedDomainError> {
     const errors: CodedDomainError[] = [];
     const name = unwrapResult(GovernmentAgencyName.create(input.name), errors);
-    const status = unwrapResult(GovernmentAgencyStatus.create(input.status ?? null), errors);
+    const status = unwrapResult(GovernmentAgencyStatus.create(input.status), errors);
 
     if (name === undefined || status === undefined) {
       return errorResult(errors);
@@ -60,6 +60,11 @@ export class GovernmentAgency extends AggregateRoot<Id> {
       return errorResult([new GovernmentAgencyAlreadyDeletedError()]);
     }
 
+    // GovernmentAgencyName.create/GovernmentAgencyStatus.create are passed here
+    // as bare function references - ValidatedPatchBuilder calls them as
+    // create(rawValue), not ClassName.create(rawValue), so `this` inside those
+    // static methods would be undefined. That's why every VO's create()/validate()
+    // calls the next one by explicit class name, never `this.`.
     const patchResult = new ValidatedPatchBuilder<GovernmentAgencyPatch, CodedDomainError>()
       .add('name', changes.name, GovernmentAgencyName.create)
       .add('status', changes.status, GovernmentAgencyStatus.create)
@@ -69,12 +74,7 @@ export class GovernmentAgency extends AggregateRoot<Id> {
       return errorResult(patchResult.errors);
     }
 
-    if (patchResult.value.name !== undefined) {
-      this.props.name = patchResult.value.name;
-    }
-    if (patchResult.value.status !== undefined) {
-      this.props.status = patchResult.value.status;
-    }
+    Object.assign(this.props, patchResult.value);
 
     return okResult(undefined);
   }

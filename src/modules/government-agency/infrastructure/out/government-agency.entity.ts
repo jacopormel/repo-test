@@ -1,5 +1,5 @@
-import { DateTime, Id } from '@pormeldev/axis-common-lib';
 import { DateTimeTransformer, IdTransformer } from '@pormeldev/axis-service-database-typeorm';
+import { DateTime, Id } from '@src/common';
 import { GOVERNMENT_AGENCY_STATUSES } from '@src/modules/government-agency/domain/value-object/government-agency-status.enum';
 import { Column, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
 

@@ -1,12 +1,17 @@
 import { BooleanValue, EnumValue, IntValue, NumberValue, StringValue } from '..';
 import type { CodedDomainError } from '../../../error';
+import { okResult } from '../../../result';
 import type { Result } from '../../../result';
 
 const SAMPLE_STATUSES = ['ACTIVE', 'INACTIVE'] as const;
 
 class SampleStatusValue extends EnumValue<typeof SAMPLE_STATUSES> {
   static create(value: string): Result<SampleStatusValue, CodedDomainError> {
-    return SampleStatusValue.validate(value, SAMPLE_STATUSES, (v) => new SampleStatusValue(v));
+    const validated = SampleStatusValue.validateEnum(value, SAMPLE_STATUSES);
+    if (!validated.ok) {
+      return validated;
+    }
+    return okResult(new SampleStatusValue(validated.value));
   }
 
   static reconstitute(value: string): SampleStatusValue {
@@ -18,7 +23,11 @@ const SAMPLE_PRIORITIES = [1, 2, 3] as const;
 
 class SamplePriorityValue extends EnumValue<typeof SAMPLE_PRIORITIES> {
   static create(value: number): Result<SamplePriorityValue, CodedDomainError> {
-    return SamplePriorityValue.validate(value, SAMPLE_PRIORITIES, (v) => new SamplePriorityValue(v));
+    const validated = SamplePriorityValue.validateEnum(value, SAMPLE_PRIORITIES);
+    if (!validated.ok) {
+      return validated;
+    }
+    return okResult(new SamplePriorityValue(validated.value));
   }
 
   static reconstitute(value: number): SamplePriorityValue {

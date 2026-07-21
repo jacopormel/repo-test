@@ -8,7 +8,7 @@ export class CreateGovernmentAgencyUsecase {
 
   async execute(input: {
     name: string;
-    status?: string;
+    status: string;
   }): Promise<Result<Id, CodedDomainError | GovernmentAgencyMappingError>> {
     const agencyResult = GovernmentAgency.create(input);
     if (!agencyResult.ok) {

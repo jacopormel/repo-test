@@ -1,5 +1,4 @@
-import type { CodedInfrastructureError } from '@pormeldev/axis-common-lib';
-import { errorPagedResult, PagedResult, QueryDto } from '@src/common';
+import { CodedInfrastructureError, errorPagedResult, PagedResult, QueryDto } from '@src/common';
 import { GovernmentAgencyDto } from '@src/modules/government-agency/application/dto/government-agency.dto';
 import { GovernmentAgencyMappingError } from '@src/modules/government-agency/application/error/government-agency-mapping.error';
 import { GovernmentAgencyQueryPort } from '@src/modules/government-agency/application/port/out/government-agency-query.port';
