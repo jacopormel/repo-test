@@ -33,9 +33,6 @@ export class CreateGovernmentAgencyController {
       throw mapGovernmentAgencyErrorsToHttpException(result.errors);
     }
 
-    return CreateGovernmentAgencyMapper.mapSuccessResultToHttpResponse(result.value, {
-      foundedAt: body.foundedAt,
-      annualBudget: body.annualBudget,
-    });
+    return CreateGovernmentAgencyMapper.mapSuccessResultToHttpResponse(result.value);
   }
 }

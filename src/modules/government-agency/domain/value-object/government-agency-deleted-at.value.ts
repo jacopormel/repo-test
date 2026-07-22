@@ -17,7 +17,9 @@ export class GovernmentAgencyDeletedAt extends DateTimeValue {
   }
 
   static reconstitute(value: string | null): GovernmentAgencyDeletedAt {
-    return new GovernmentAgencyDeletedAt(GovernmentAgencyDeletedAt.mapNullable(value, DateTime.fromISO));
+    return new GovernmentAgencyDeletedAt(
+      GovernmentAgencyDeletedAt.mapNullable(value, DateTime.fromISO),
+    );
   }
 
   static now(): GovernmentAgencyDeletedAt {

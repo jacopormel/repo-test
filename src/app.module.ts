@@ -31,13 +31,18 @@ import {
 } from '@pormeldev/axis-service-authorization';
 import { AWSVerifiedPermissionsAuthorizationService } from '@pormeldev/axis-service-authorization-awsvp';
 import { AXIS_CACHE, CacheInterface } from '@pormeldev/axis-service-cache';
-import { RedisCacheService } from '@pormeldev/axis-service-cache-redis';
+import { RedisCacheService, type RedisOptions } from '@pormeldev/axis-service-cache-redis';
 import {
   getMissingRequiredDatabaseEnvVars,
   TransactionContextConfigurator,
   TypeOrmTransactionAdapter,
 } from '@pormeldev/axis-service-database-typeorm';
-import { AXIS_LOGGER, LoggerInterface, LogLevel } from '@pormeldev/axis-service-logger';
+import {
+  AXIS_LOGGER,
+  LoggerInterface,
+  LoggerOptions,
+  LogLevel,
+} from '@pormeldev/axis-service-logger';
 import {
   buildBaseOrmConfig,
   buildPostgresOptionsFromConfig,
@@ -130,7 +135,7 @@ if (
         prefixValue: process.env.AXIS_LOG_PREFIX_VALUE as string,
         format: (process.env.AXIS_LOG_FORMAT || 'json').toLowerCase() === 'text' ? 'text' : 'json',
         colors: (process.env.AXIS_LOG_COLORS || '').toLowerCase() === 'true',
-      } as any,
+      } as LoggerOptions,
       {
         target: process.env.AXIS_LOG_TARGET as string,
         integrationType: process.env.AXIS_LOG_INTEGRATION_TYPE as string,
@@ -156,9 +161,9 @@ if (
         );
         const { enabled, defaultMode } = shouldEnableReplication(cfg, slaveCount);
 
-        const finalConfig: any = { ...baseConfig };
+        const finalConfig: Record<string, unknown> = { ...baseConfig };
         if (enabled) {
-          const replication: any = { master, slaves };
+          const replication: Record<string, unknown> = { master, slaves };
           if (defaultMode === 'master' || defaultMode === 'slave')
             replication.defaultMode = defaultMode;
           finalConfig.replication = replication;
@@ -261,7 +266,7 @@ if (
         const namespace = cfg.get<string>('CACHE_NAMESPACE') as string;
         const ttl = parseInt(cfg.get<string>('REDIS_TTL') as string);
         const logger = new RedisCacheLogPublisher(appLogger, { host, port });
-        const options: any = { host, port, tls, namespace, ttl, logger };
+        const options: RedisOptions = { host, port, tls, namespace, ttl, logger };
         return new RedisCacheService(options);
       },
       inject: [ConfigService, AXIS_LOGGER],
@@ -278,10 +283,12 @@ if (
     {
       provide: APP_GUARD,
       useFactory: (dataSource: DataSource, reflector: Reflector) => {
-        // No-op: this template doesn't sync extra fields on local user insert/update.
-        const emptyOnInsert = (_u: AxisUser, _id: number) => {};
-        // No-op: this template doesn't sync extra fields on local user insert/update.
-        const emptyOnUpdate = (_u: AxisUser, _id: number) => {};
+        const emptyOnInsert = (_u: AxisUser, _id: number) => {
+          // No-op: this template doesn't sync extra fields on local user insert/update.
+        };
+        const emptyOnUpdate = (_u: AxisUser, _id: number) => {
+          // No-op: this template doesn't sync extra fields on local user insert/update.
+        };
         return new LocalUserGuard(dataSource, reflector, emptyOnInsert, emptyOnUpdate);
       },
       inject: [DataSource, Reflector],

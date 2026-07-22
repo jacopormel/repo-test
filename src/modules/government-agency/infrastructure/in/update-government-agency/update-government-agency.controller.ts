@@ -1,6 +1,5 @@
-import { BadRequestException, Body, Param, UseGuards } from '@nestjs/common';
+import { Body, Param, UseGuards } from '@nestjs/common';
 import { ApiJsonApiController, ApiJsonApiUpdate, ParseIdPipe } from '@pormeldev/axis-nestjs-common';
-import { Id } from '@src/common';
 import { AuthorizationGuard } from '@src/common/infrastructure/authorization/authorization.guard';
 import { RequirePermission } from '@src/common/infrastructure/authorization/require-permission.decorator';
 import { UpdateGovernmentAgencyUsecase } from '@src/modules/government-agency/application/command/update-government-agency/update-government-agency.usecase';
@@ -21,12 +20,7 @@ export class UpdateGovernmentAgencyController {
     @Param('id', ParseIdPipe) id: string,
     @Body() body: UpdateGovernmentAgencyRequestDto,
   ): Promise<void> {
-    const idResult = Id.fromString(id);
-    if (!idResult.ok) {
-      throw new BadRequestException(idResult.errors);
-    }
-
-    const result = await this.updateGovernmentAgencyUsecase.execute(idResult.value, {
+    const result = await this.updateGovernmentAgencyUsecase.execute(id, {
       name: body.name,
       status: body.status,
       foundedAt: body.foundedAt,

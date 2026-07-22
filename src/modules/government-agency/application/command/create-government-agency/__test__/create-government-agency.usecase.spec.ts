@@ -23,7 +23,7 @@ describe('CreateGovernmentAgencyUsecase', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value).toBe(savedId);
+      expect(result.value).toBe(savedId.toString());
     }
     expect(repository.save).toHaveBeenCalledTimes(1);
     const savedAgency = repository.save.mock.calls[0][0] as GovernmentAgency;

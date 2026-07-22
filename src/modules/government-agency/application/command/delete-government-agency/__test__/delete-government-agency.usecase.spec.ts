@@ -28,7 +28,7 @@ describe('DeleteGovernmentAgencyUsecase', () => {
     repository.patch.mockResolvedValue(okResult(undefined));
     const usecase = new DeleteGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(agency.getId());
+    const result = await usecase.execute(agency.getId().toString());
 
     expect(result.ok).toBe(true);
     expect(agency.isDeleted()).toBe(true);
@@ -41,7 +41,7 @@ describe('DeleteGovernmentAgencyUsecase', () => {
     repository.findById.mockResolvedValue({ ok: false, errors: [notFoundError] });
     const usecase = new DeleteGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(Id.create());
+    const result = await usecase.execute(Id.create().toString());
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -57,7 +57,7 @@ describe('DeleteGovernmentAgencyUsecase', () => {
     repository.findById.mockResolvedValue(okResult(agency));
     const usecase = new DeleteGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(agency.getId());
+    const result = await usecase.execute(agency.getId().toString());
 
     expect(result.ok).toBe(false);
     if (!result.ok) {

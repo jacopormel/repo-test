@@ -5,7 +5,7 @@ import {
   Id,
   okResult,
   Result,
-  unwrapResult,
+  ValidatedCreateBuilder,
   ValidatedPatchBuilder,
 } from '@src/common/domain';
 import { GovernmentAgencyAlreadyDeletedError } from './error/government-agency-already-deleted.error';
@@ -42,27 +42,18 @@ export class GovernmentAgency extends AggregateRoot<Id> {
     foundedAt?: string;
     annualBudget?: string;
   }): Result<GovernmentAgency, CodedDomainError> {
-    const errors: CodedDomainError[] = [];
-    const name = unwrapResult(GovernmentAgencyName.create(input.name), errors);
-    const status = unwrapResult(GovernmentAgencyStatus.create(input.status), errors);
-    const foundedAt = unwrapResult(
-      GovernmentAgencyFoundedAt.create(input.foundedAt ?? null),
-      errors,
-    );
-    const annualBudget = unwrapResult(
-      GovernmentAgencyAnnualBudget.create(input.annualBudget ?? null),
-      errors,
-    );
+    const createResult = new ValidatedCreateBuilder<GovernmentAgencyPatch, CodedDomainError>()
+      .add('name', input.name, GovernmentAgencyName.create)
+      .add('status', input.status, GovernmentAgencyStatus.create)
+      .add('foundedAt', input.foundedAt ?? null, GovernmentAgencyFoundedAt.create)
+      .add('annualBudget', input.annualBudget ?? null, GovernmentAgencyAnnualBudget.create)
+      .toResult();
 
-    if (
-      name === undefined ||
-      status === undefined ||
-      foundedAt === undefined ||
-      annualBudget === undefined ||
-      errors.length > 0
-    ) {
-      return errorResult(errors);
+    if (!createResult.ok) {
+      return errorResult(createResult.errors);
     }
+
+    const { name, status, foundedAt, annualBudget } = createResult.value;
 
     return okResult(
       new GovernmentAgency(Id.create(), {
