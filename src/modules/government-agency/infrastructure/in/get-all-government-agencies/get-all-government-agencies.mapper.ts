@@ -12,6 +12,8 @@ export class GetAllGovernmentAgenciesMapper {
       dto.id = agency.id;
       dto.name = agency.name;
       dto.status = agency.status;
+      dto.foundedAt = agency.foundedAt;
+      dto.annualBudget = agency.annualBudget;
       return dto;
     });
 

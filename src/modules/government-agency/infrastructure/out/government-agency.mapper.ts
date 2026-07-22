@@ -7,6 +7,14 @@ export class GovernmentAgencyMapper {
   static mapEntityToDto(
     entity: GovernmentAgencyEntity,
   ): Result<GovernmentAgencyDto, GovernmentAgencyMappingError> {
-    return okResult(new GovernmentAgencyDto(entity.id.toString(), entity.name, entity.status));
+    return okResult(
+      new GovernmentAgencyDto(
+        entity.id.toString(),
+        entity.name,
+        entity.status,
+        entity.foundedAt?.toISODate(),
+        entity.annualBudget?.toString(),
+      ),
+    );
   }
 }

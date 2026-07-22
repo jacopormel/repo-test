@@ -8,7 +8,7 @@ export class UpdateGovernmentAgencyUsecase {
 
   async execute(
     id: Id,
-    input: { name?: string; status?: string },
+    input: { name?: string; status?: string; foundedAt?: string; annualBudget?: string },
   ): Promise<
     Result<void, CodedDomainError | GovernmentAgencyMappingError | GovernmentAgencyNotFoundError>
   > {

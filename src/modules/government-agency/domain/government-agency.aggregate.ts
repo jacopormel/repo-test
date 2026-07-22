@@ -1,7 +1,6 @@
 import {
   AggregateRoot,
   CodedDomainError,
-  DateTime,
   errorResult,
   Id,
   okResult,
@@ -10,16 +9,24 @@ import {
   ValidatedPatchBuilder,
 } from '@src/common/domain';
 import { GovernmentAgencyAlreadyDeletedError } from './error/government-agency-already-deleted.error';
+import { GovernmentAgencyAnnualBudget } from './value-object/government-agency-annual-budget.value';
+import { GovernmentAgencyDeletedAt } from './value-object/government-agency-deleted-at.value';
+import { GovernmentAgencyFoundedAt } from './value-object/government-agency-founded-at.value';
 import { GovernmentAgencyName } from './value-object/government-agency-name.value';
 import { GovernmentAgencyStatus } from './value-object/government-agency-status.value';
 
 interface GovernmentAgencyProps {
   name: GovernmentAgencyName;
   status: GovernmentAgencyStatus;
-  deletedAt?: DateTime;
+  deletedAt: GovernmentAgencyDeletedAt;
+  foundedAt: GovernmentAgencyFoundedAt;
+  annualBudget: GovernmentAgencyAnnualBudget;
 }
 
-type GovernmentAgencyPatch = Pick<GovernmentAgencyProps, 'name' | 'status'>;
+type GovernmentAgencyPatch = Pick<
+  GovernmentAgencyProps,
+  'name' | 'status' | 'foundedAt' | 'annualBudget'
+>;
 
 export class GovernmentAgency extends AggregateRoot<Id> {
   private readonly props: GovernmentAgencyProps;
@@ -32,42 +39,76 @@ export class GovernmentAgency extends AggregateRoot<Id> {
   static create(input: {
     name: string;
     status: string;
+    foundedAt?: string;
+    annualBudget?: string;
   }): Result<GovernmentAgency, CodedDomainError> {
     const errors: CodedDomainError[] = [];
     const name = unwrapResult(GovernmentAgencyName.create(input.name), errors);
     const status = unwrapResult(GovernmentAgencyStatus.create(input.status), errors);
+    const foundedAt = unwrapResult(
+      GovernmentAgencyFoundedAt.create(input.foundedAt ?? null),
+      errors,
+    );
+    const annualBudget = unwrapResult(
+      GovernmentAgencyAnnualBudget.create(input.annualBudget ?? null),
+      errors,
+    );
 
-    if (name === undefined || status === undefined) {
+    if (
+      name === undefined ||
+      status === undefined ||
+      foundedAt === undefined ||
+      annualBudget === undefined ||
+      errors.length > 0
+    ) {
       return errorResult(errors);
     }
 
-    return okResult(new GovernmentAgency(Id.create(), { name, status }));
+    return okResult(
+      new GovernmentAgency(Id.create(), {
+        name,
+        status,
+        deletedAt: GovernmentAgencyDeletedAt.reconstitute(null),
+        foundedAt,
+        annualBudget,
+      }),
+    );
   }
 
   static reconstitute(
     id: string,
-    props: { name: string; status: string; deletedAt?: DateTime },
+    props: {
+      name: string;
+      status: string;
+      deletedAt?: string;
+      foundedAt?: string;
+      annualBudget?: string;
+    },
   ): GovernmentAgency {
     return new GovernmentAgency(Id.reconstitute(id), {
       name: GovernmentAgencyName.reconstitute(props.name),
       status: GovernmentAgencyStatus.reconstitute(props.status),
-      deletedAt: props.deletedAt,
+      deletedAt: GovernmentAgencyDeletedAt.reconstitute(props.deletedAt ?? null),
+      foundedAt: GovernmentAgencyFoundedAt.reconstitute(props.foundedAt ?? null),
+      annualBudget: GovernmentAgencyAnnualBudget.reconstitute(props.annualBudget ?? null),
     });
   }
 
-  update(changes: { name?: string; status?: string }): Result<void, CodedDomainError> {
+  update(changes: {
+    name?: string;
+    status?: string;
+    foundedAt?: string;
+    annualBudget?: string;
+  }): Result<void, CodedDomainError> {
     if (this.isDeleted()) {
       return errorResult([new GovernmentAgencyAlreadyDeletedError()]);
     }
 
-    // GovernmentAgencyName.create/GovernmentAgencyStatus.create are passed here
-    // as bare function references - ValidatedPatchBuilder calls them as
-    // create(rawValue), not ClassName.create(rawValue), so `this` inside those
-    // static methods would be undefined. That's why every VO's create()/validate()
-    // calls the next one by explicit class name, never `this.`.
     const patchResult = new ValidatedPatchBuilder<GovernmentAgencyPatch, CodedDomainError>()
       .add('name', changes.name, GovernmentAgencyName.create)
       .add('status', changes.status, GovernmentAgencyStatus.create)
+      .add('foundedAt', changes.foundedAt, GovernmentAgencyFoundedAt.create)
+      .add('annualBudget', changes.annualBudget, GovernmentAgencyAnnualBudget.create)
       .toResult();
 
     if (!patchResult.ok) {
@@ -84,12 +125,12 @@ export class GovernmentAgency extends AggregateRoot<Id> {
       return errorResult([new GovernmentAgencyAlreadyDeletedError()]);
     }
 
-    this.props.deletedAt = DateTime.now();
+    this.props.deletedAt = GovernmentAgencyDeletedAt.now();
     return okResult(undefined);
   }
 
   isDeleted(): boolean {
-    return this.props.deletedAt !== undefined && this.props.deletedAt !== null;
+    return this.props.deletedAt.value !== null;
   }
 
   get name(): GovernmentAgencyName {
@@ -100,7 +141,15 @@ export class GovernmentAgency extends AggregateRoot<Id> {
     return this.props.status;
   }
 
-  get deletedAt(): DateTime | undefined {
+  get deletedAt(): GovernmentAgencyDeletedAt {
     return this.props.deletedAt;
+  }
+
+  get foundedAt(): GovernmentAgencyFoundedAt {
+    return this.props.foundedAt;
+  }
+
+  get annualBudget(): GovernmentAgencyAnnualBudget {
+    return this.props.annualBudget;
   }
 }

@@ -6,11 +6,6 @@ import { PrimitiveValue } from '../primitive-value';
 export abstract class EnumValue<
   TValues extends readonly (string | number)[],
 > extends PrimitiveValue<TValues[number]> {
-  // Named validateEnum, not validate: needs an extra allowedValues param of a
-  // type PrimitiveValue.validate() doesn't have, which also trips TS2417 if
-  // reused under the same name. Doesn't delegate the undefined check to
-  // PrimitiveValue.validate() either - that returns `unknown`, and isMember()
-  // below needs the string|number narrowing that would be lost in the round trip.
   protected static validateEnum<TValues extends readonly (string | number)[]>(
     value: string | number | undefined | null,
     allowedValues: TValues,

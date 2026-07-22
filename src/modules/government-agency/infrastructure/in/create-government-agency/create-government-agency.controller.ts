@@ -25,12 +25,17 @@ export class CreateGovernmentAgencyController {
     const result = await this.createGovernmentAgencyUsecase.execute({
       name: body.name,
       status: body.status,
+      foundedAt: body.foundedAt,
+      annualBudget: body.annualBudget,
     });
 
     if (!result.ok) {
       throw mapGovernmentAgencyErrorsToHttpException(result.errors);
     }
 
-    return CreateGovernmentAgencyMapper.mapSuccessResultToHttpResponse(result.value);
+    return CreateGovernmentAgencyMapper.mapSuccessResultToHttpResponse(result.value, {
+      foundedAt: body.foundedAt,
+      annualBudget: body.annualBudget,
+    });
   }
 }

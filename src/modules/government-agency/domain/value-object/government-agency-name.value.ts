@@ -1,4 +1,11 @@
-import { CodedDomainError, errorResult, okResult, Result, StringValue } from '@src/common/domain';
+import {
+  CodedDomainError,
+  errorResult,
+  okResult,
+  Result,
+  StringValue,
+  toCreateResult,
+} from '@src/common/domain';
 
 const MIN_LENGTH = 10;
 
@@ -26,11 +33,7 @@ export class GovernmentAgencyName extends StringValue {
   }
 
   static create(value: string): Result<GovernmentAgencyName, CodedDomainError> {
-    const validated = GovernmentAgencyName.validate(value);
-    if (!validated.ok) {
-      return validated;
-    }
-    return okResult(new GovernmentAgencyName(validated.value));
+    return toCreateResult(GovernmentAgencyName.validate(value), (v) => new GovernmentAgencyName(v));
   }
 
   static reconstitute(value: string): GovernmentAgencyName {

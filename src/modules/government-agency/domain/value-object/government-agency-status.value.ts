@@ -1,4 +1,11 @@
-import { CodedDomainError, EnumValue, errorResult, okResult, Result } from '@src/common/domain';
+import {
+  CodedDomainError,
+  EnumValue,
+  errorResult,
+  okResult,
+  Result,
+  toCreateResult,
+} from '@src/common/domain';
 import {
   GOVERNMENT_AGENCY_STATUSES,
   GovernmentAgencyStatusType,
@@ -21,11 +28,10 @@ export class GovernmentAgencyStatus extends EnumValue<typeof GOVERNMENT_AGENCY_S
   }
 
   static create(value: string): Result<GovernmentAgencyStatus, CodedDomainError> {
-    const validated = GovernmentAgencyStatus.validate(value);
-    if (!validated.ok) {
-      return validated;
-    }
-    return okResult(new GovernmentAgencyStatus(validated.value));
+    return toCreateResult(
+      GovernmentAgencyStatus.validate(value),
+      (v) => new GovernmentAgencyStatus(v),
+    );
   }
 
   static reconstitute(value: string): GovernmentAgencyStatus {

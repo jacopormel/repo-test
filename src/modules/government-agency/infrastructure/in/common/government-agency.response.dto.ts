@@ -22,4 +22,20 @@ export class GovernmentAgencyResponseDto {
     enum: GOVERNMENT_AGENCY_STATUSES,
   })
   status!: string;
+
+  @ApiProperty({
+    description: 'Government agency founding date (YYYY-MM-DD)',
+    example: '1990-01-01',
+    required: false,
+    nullable: true,
+  })
+  foundedAt?: string;
+
+  @ApiProperty({
+    description: 'Government agency annual budget (decimal string)',
+    example: '150000.50',
+    required: false,
+    nullable: true,
+  })
+  annualBudget?: string;
 }
