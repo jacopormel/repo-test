@@ -1,5 +1,6 @@
 import { CodedDomainError } from '../../error';
 import { errorResult, okResult, Result } from '../../result';
+import { toCreateResult } from '../helpers/to-create-result';
 import { PrimitiveValue } from '../primitive-value';
 
 export class NumberValue extends PrimitiveValue<number> {
@@ -19,11 +20,7 @@ export class NumberValue extends PrimitiveValue<number> {
   }
 
   static create(value: number | null | undefined): Result<NumberValue, CodedDomainError> {
-    const validated = NumberValue.validate(value);
-    if (!validated.ok) {
-      return errorResult(validated.errors);
-    }
-    return okResult(new NumberValue(validated.value));
+    return toCreateResult(NumberValue.validate(value), (v) => new NumberValue(v));
   }
 
   static reconstitute(value: number | null): NumberValue {

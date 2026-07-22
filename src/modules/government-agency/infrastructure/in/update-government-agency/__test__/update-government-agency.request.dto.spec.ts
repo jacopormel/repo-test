@@ -41,4 +41,23 @@ describe('UpdateGovernmentAgencyRequestDto', () => {
 
     expect(errors.some((error) => error.property === 'status')).toBe(true);
   });
+
+  it('accepts a valid foundedAt and annualBudget', async () => {
+    const errors = await validateDto({ foundedAt: '1990-01-01', annualBudget: '150000.50' });
+
+    expect(errors).toHaveLength(0);
+  });
+
+  it('accepts an explicit null foundedAt/annualBudget the same as omitting them', async () => {
+    const errors = await validateDto({ foundedAt: null, annualBudget: null });
+
+    expect(errors).toHaveLength(0);
+  });
+
+  it('rejects a malformed foundedAt/annualBudget', async () => {
+    const errors = await validateDto({ foundedAt: 'not-a-date', annualBudget: 'not-a-number' });
+
+    expect(errors.some((error) => error.property === 'foundedAt')).toBe(true);
+    expect(errors.some((error) => error.property === 'annualBudget')).toBe(true);
+  });
 });

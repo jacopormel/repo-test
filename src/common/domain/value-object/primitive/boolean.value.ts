@@ -1,5 +1,6 @@
 import { CodedDomainError } from '../../error';
 import { errorResult, okResult, Result } from '../../result';
+import { toCreateResult } from '../helpers/to-create-result';
 import { PrimitiveValue } from '../primitive-value';
 
 export class BooleanValue extends PrimitiveValue<boolean> {
@@ -19,11 +20,7 @@ export class BooleanValue extends PrimitiveValue<boolean> {
   }
 
   static create(value: boolean | null | undefined): Result<BooleanValue, CodedDomainError> {
-    const validated = BooleanValue.validate(value);
-    if (!validated.ok) {
-      return errorResult(validated.errors);
-    }
-    return okResult(new BooleanValue(validated.value));
+    return toCreateResult(BooleanValue.validate(value), (v) => new BooleanValue(v));
   }
 
   static reconstitute(value: boolean | null): BooleanValue {

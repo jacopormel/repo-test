@@ -1,5 +1,6 @@
 import { CodedDomainError } from '../../error';
 import { errorResult, okResult, Result } from '../../result';
+import { toCreateResult } from '../helpers/to-create-result';
 import { PrimitiveValue } from '../primitive-value';
 
 export class IntValue extends PrimitiveValue<number> {
@@ -10,9 +11,6 @@ export class IntValue extends PrimitiveValue<number> {
     if (!base.ok) {
       return base;
     }
-    // The `typeof` check is redundant at runtime - Number.isSafeInteger already
-    // returns false for non-numbers - but base.value comes back as `unknown`
-    // from PrimitiveValue.validate(), and only `typeof` narrows that for TS.
     if (
       base.value !== null &&
       (typeof base.value !== 'number' || !Number.isSafeInteger(base.value))
@@ -25,11 +23,7 @@ export class IntValue extends PrimitiveValue<number> {
   }
 
   static create(value: number | null | undefined): Result<IntValue, CodedDomainError> {
-    const validated = IntValue.validate(value);
-    if (!validated.ok) {
-      return errorResult(validated.errors);
-    }
-    return okResult(new IntValue(validated.value));
+    return toCreateResult(IntValue.validate(value), (v) => new IntValue(v));
   }
 
   static reconstitute(value: number | null): IntValue {

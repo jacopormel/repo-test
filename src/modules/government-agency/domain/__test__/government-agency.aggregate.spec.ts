@@ -1,4 +1,4 @@
-import { DateTime } from '@src/common/domain';
+import { GovernmentAgencyDeletedAt } from '../value-object/government-agency-deleted-at.value';
 import { GovernmentAgency } from '../government-agency.aggregate';
 
 function createValidAgency(): GovernmentAgency {
@@ -23,7 +23,7 @@ describe('GovernmentAgency', () => {
         expect(result.value.status.value).toBe('ACTIVE');
         expect(result.value.status.isActive()).toBe(true);
         expect(result.value.isDeleted()).toBe(false);
-        expect(result.value.deletedAt).toBeUndefined();
+        expect(result.value.deletedAt.value).toBeNull();
       }
     });
 
@@ -72,21 +72,87 @@ describe('GovernmentAgency', () => {
         );
       }
     });
+
+    it('accepts a valid foundedAt and annualBudget', () => {
+      const result = GovernmentAgency.create({
+        name: 'Ministry of Health',
+        status: 'ACTIVE',
+        foundedAt: '1990-01-01',
+        annualBudget: '150000.50',
+      });
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.foundedAt.toJSON()).toBe('1990-01-01');
+        expect(result.value.annualBudget.toJSON()).toBe('150000.5');
+      }
+    });
+
+    it('leaves foundedAt/annualBudget empty (null) when not provided', () => {
+      const result = GovernmentAgency.create({ name: 'Ministry of Health', status: 'ACTIVE' });
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.foundedAt.value).toBeNull();
+        expect(result.value.annualBudget.value).toBeNull();
+      }
+    });
+
+    it('rejects a malformed foundedAt/annualBudget instead of letting the underlying library throw', () => {
+      const result = GovernmentAgency.create({
+        name: 'Ministry of Health',
+        status: 'ACTIVE',
+        foundedAt: 'not-a-date',
+        annualBudget: 'not-a-number',
+      });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors.map((error) => error.code)).toEqual(
+          expect.arrayContaining(['INVALID_DATE_ONLY', 'INVALID_DECIMAL']),
+        );
+      }
+    });
+
+    it('rejects a negative annualBudget', () => {
+      const result = GovernmentAgency.create({
+        name: 'Ministry of Health',
+        status: 'ACTIVE',
+        annualBudget: '-500000',
+      });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors[0].code).toBe('AGENCY_ANNUAL_BUDGET_NEGATIVE');
+      }
+    });
   });
 
   describe('reconstitute', () => {
     it('restores id, name, status and deletedAt without validating', () => {
-      const deletedAt = DateTime.now();
+      const deletedAt = GovernmentAgencyDeletedAt.now();
       const agency = GovernmentAgency.reconstitute('short', {
         name: 'short',
         status: 'INACTIVE',
-        deletedAt,
+        deletedAt: deletedAt.toJSON()!,
       });
 
       expect(agency.name.value).toBe('short');
       expect(agency.status.value).toBe('INACTIVE');
-      expect(agency.deletedAt).toBe(deletedAt);
+      expect(agency.deletedAt.toJSON()).toBe(deletedAt.toJSON());
       expect(agency.isDeleted()).toBe(true);
+    });
+
+    it('restores foundedAt and annualBudget', () => {
+      const agency = GovernmentAgency.reconstitute('short', {
+        name: 'Ministry of Health',
+        status: 'ACTIVE',
+        foundedAt: '1990-01-01',
+        annualBudget: '150000.50',
+      });
+
+      expect(agency.foundedAt.toJSON()).toBe('1990-01-01');
+      expect(agency.annualBudget.toJSON()).toBe('150000.5');
     });
   });
 
@@ -162,6 +228,43 @@ describe('GovernmentAgency', () => {
       }
       expect(agency.name.value).toBe('Ministry of Health');
     });
+
+    it('applies a valid foundedAt and annualBudget change', () => {
+      const agency = createValidAgency();
+
+      const result = agency.update({ foundedAt: '1990-01-01', annualBudget: '150000.50' });
+
+      expect(result.ok).toBe(true);
+      expect(agency.foundedAt.toJSON()).toBe('1990-01-01');
+      expect(agency.annualBudget.toJSON()).toBe('150000.5');
+    });
+
+    it('rejects a malformed foundedAt/annualBudget and leaves the aggregate unchanged', () => {
+      const agency = createValidAgency();
+
+      const result = agency.update({ foundedAt: 'not-a-date', annualBudget: 'not-a-number' });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors.map((error) => error.code)).toEqual(
+          expect.arrayContaining(['INVALID_DATE_ONLY', 'INVALID_DECIMAL']),
+        );
+      }
+      expect(agency.foundedAt.value).toBeNull();
+      expect(agency.annualBudget.value).toBeNull();
+    });
+
+    it('rejects a negative annualBudget and leaves the aggregate unchanged', () => {
+      const agency = createValidAgency();
+
+      const result = agency.update({ annualBudget: '-500000' });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.errors[0].code).toBe('AGENCY_ANNUAL_BUDGET_NEGATIVE');
+      }
+      expect(agency.annualBudget.value).toBeNull();
+    });
   });
 
   describe('markAsDeleted', () => {
@@ -172,7 +275,7 @@ describe('GovernmentAgency', () => {
 
       expect(result.ok).toBe(true);
       expect(agency.isDeleted()).toBe(true);
-      expect(agency.deletedAt).toBeInstanceOf(DateTime);
+      expect(agency.deletedAt).toBeInstanceOf(GovernmentAgencyDeletedAt);
     });
 
     it('refuses to delete an already-deleted agency', () => {

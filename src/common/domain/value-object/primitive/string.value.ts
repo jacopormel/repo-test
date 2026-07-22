@@ -1,5 +1,6 @@
 import { CodedDomainError } from '../../error';
 import { errorResult, okResult, Result } from '../../result';
+import { toCreateResult } from '../helpers/to-create-result';
 import { PrimitiveValue } from '../primitive-value';
 
 export class StringValue extends PrimitiveValue<string> {
@@ -19,11 +20,7 @@ export class StringValue extends PrimitiveValue<string> {
   }
 
   static create(value: string | null | undefined): Result<StringValue, CodedDomainError> {
-    const validated = StringValue.validate(value);
-    if (!validated.ok) {
-      return errorResult(validated.errors);
-    }
-    return okResult(new StringValue(validated.value));
+    return toCreateResult(StringValue.validate(value), (v) => new StringValue(v));
   }
 
   static reconstitute(value: string | null): StringValue {
