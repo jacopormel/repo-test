@@ -7,11 +7,16 @@ export class DeleteGovernmentAgencyUsecase {
   constructor(private readonly governmentAgencyRepository: GovernmentAgencyRepositoryPort) {}
 
   async execute(
-    id: Id,
+    id: string,
   ): Promise<
     Result<void, CodedDomainError | GovernmentAgencyMappingError | GovernmentAgencyNotFoundError>
   > {
-    const agencyResult = await this.governmentAgencyRepository.findById(id);
+    const idResult = Id.fromString(id);
+    if (!idResult.ok) {
+      return errorResult(idResult.errors);
+    }
+
+    const agencyResult = await this.governmentAgencyRepository.findById(idResult.value);
     if (!agencyResult.ok) {
       return errorResult(agencyResult.errors);
     }

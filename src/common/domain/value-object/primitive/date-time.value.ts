@@ -18,7 +18,11 @@ export class DateTimeValue extends OpaqueValue<DateTime> {
     }
     if (typeof raw !== 'string') {
       return errorResult([
-        new CodedDomainError('DateTimeValue requires an ISO 8601 string', 'value', 'INVALID_DATETIME'),
+        new CodedDomainError(
+          'DateTimeValue requires an ISO 8601 string',
+          'value',
+          'INVALID_DATETIME',
+        ),
       ]);
     }
     return DateTimeValue.parse(() => DateTime.fromISO(raw), 'INVALID_DATETIME');

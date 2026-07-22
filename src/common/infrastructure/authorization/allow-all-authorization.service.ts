@@ -7,11 +7,11 @@ import type {
 } from '@pormeldev/axis-service-authorization';
 
 export class AllowAllAuthorizationService implements AuthorizationService {
-  async isAuthorized(_request: AuthorizationRequest): Promise<Result<boolean, AuthorizationError>> {
-    return okResult(true);
+  isAuthorized(_request: AuthorizationRequest): Promise<Result<boolean, AuthorizationError>> {
+    return Promise.resolve(okResult(true));
   }
 
-  async areAuthorized(requests: AuthorizationRequest[]): Promise<AuthorizationResponse[]> {
-    return requests.map((request) => ({ request, result: okResult(true) }));
+  areAuthorized(requests: AuthorizationRequest[]): Promise<AuthorizationResponse[]> {
+    return Promise.resolve(requests.map((request) => ({ request, result: okResult(true) })));
   }
 }

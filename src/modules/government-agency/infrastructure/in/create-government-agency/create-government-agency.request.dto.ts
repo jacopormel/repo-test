@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GOVERNMENT_AGENCY_STATUSES } from '@src/modules/government-agency/domain/value-object/government-agency-status.enum';
-import { IsDateString, IsDecimal, IsIn, IsNotEmpty, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
+import {
+  IsDateString,
+  IsDecimal,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateGovernmentAgencyRequestDto {
   @ApiProperty({

@@ -18,7 +18,11 @@ export class DateOnlyValue extends OpaqueValue<DateOnly> {
     }
     if (typeof raw !== 'string') {
       return errorResult([
-        new CodedDomainError('DateOnlyValue requires a YYYY-MM-DD string', 'value', 'INVALID_DATE_ONLY'),
+        new CodedDomainError(
+          'DateOnlyValue requires a YYYY-MM-DD string',
+          'value',
+          'INVALID_DATE_ONLY',
+        ),
       ]);
     }
     return DateOnlyValue.parse(() => DateOnly.fromISODate(raw), 'INVALID_DATE_ONLY');

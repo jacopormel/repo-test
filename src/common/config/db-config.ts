@@ -66,7 +66,7 @@ function getInt(val?: unknown): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-export function buildPostgresOptionsFromConfig(cfg: ConfigService): any {
+export function buildPostgresOptionsFromConfig(cfg: ConfigService): Record<string, unknown> {
   return {
     schema: cfg.get('POSTGRES_SCHEMA') || undefined,
     ssl:
@@ -128,7 +128,7 @@ export function buildBaseOrmConfig(
       host: masterHost,
       database: masterDb,
     }),
-  } as any;
+  } as Record<string, unknown>;
 }
 
 export function shouldEnableReplication(cfg: ConfigService, slaveCount: number) {

@@ -28,7 +28,7 @@ describe('UpdateGovernmentAgencyUsecase', () => {
     repository.patch.mockResolvedValue(okResult(undefined));
     const usecase = new UpdateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(agency.getId(), { name: 'Ministry of Education' });
+    const result = await usecase.execute(agency.getId().toString(), { name: 'Ministry of Education' });
 
     expect(result.ok).toBe(true);
     expect(agency.name.value).toBe('Ministry of Education');
@@ -41,7 +41,7 @@ describe('UpdateGovernmentAgencyUsecase', () => {
     repository.findById.mockResolvedValue({ ok: false, errors: [notFoundError] });
     const usecase = new UpdateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(Id.create(), { name: 'Ministry of Education' });
+    const result = await usecase.execute(Id.create().toString(), { name: 'Ministry of Education' });
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -56,7 +56,7 @@ describe('UpdateGovernmentAgencyUsecase', () => {
     repository.findById.mockResolvedValue(okResult(agency));
     const usecase = new UpdateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(agency.getId(), { name: 'short' });
+    const result = await usecase.execute(agency.getId().toString(), { name: 'short' });
 
     expect(result.ok).toBe(false);
     expect(repository.patch).not.toHaveBeenCalled();
@@ -69,7 +69,7 @@ describe('UpdateGovernmentAgencyUsecase', () => {
     repository.findById.mockResolvedValue(okResult(agency));
     const usecase = new UpdateGovernmentAgencyUsecase(repository);
 
-    const result = await usecase.execute(agency.getId(), { name: 'Ministry of Education' });
+    const result = await usecase.execute(agency.getId().toString(), { name: 'Ministry of Education' });
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
