@@ -14,6 +14,8 @@ import { AXIS_AUTHORIZATION_SERVICE, Context } from '@pormeldev/axis-service-aut
 import type { RequiredPermission } from './require-permission.decorator';
 import { PERMISSION_METADATA_KEY } from './require-permission.decorator';
 
+export const OPEN_ENDPOINT_METADATA_KEY = 'axis:isOpen';
+
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
   constructor(
@@ -23,12 +25,19 @@ export class AuthorizationGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isOpen = this.reflector.get<boolean>(OPEN_ENDPOINT_METADATA_KEY, context.getHandler());
+    if (isOpen) {
+      return true;
+    }
+
     const required = this.reflector.get<RequiredPermission | undefined>(
       PERMISSION_METADATA_KEY,
       context.getHandler(),
     );
     if (!required) {
-      return true;
+      throw new ForbiddenException(
+        'Endpoint has no @RequirePermission or @OpenEndpoint decorator - denying by default.',
+      );
     }
 
     const request = context.switchToHttp().getRequest();

@@ -4,7 +4,8 @@ import type { Reflector } from '@nestjs/core';
 import type { AxisUser } from '@pormeldev/axis-common-lib';
 import { errorResult, okResult } from '@pormeldev/axis-common-lib';
 import type { AuthorizationError, AuthorizationService } from '@pormeldev/axis-service-authorization';
-import { AuthorizationGuard } from '../authorization.guard';
+import { AuthorizationGuard, OPEN_ENDPOINT_METADATA_KEY } from '../authorization.guard';
+import { PERMISSION_METADATA_KEY } from '../require-permission.decorator';
 import type { RequiredPermission } from '../require-permission.decorator';
 
 function createExecutionContext(options: {
@@ -25,9 +26,16 @@ function createExecutionContext(options: {
   } as unknown as ExecutionContext;
 }
 
-function createReflectorMock(required: RequiredPermission | undefined): jest.Mocked<Reflector> {
+function createReflectorMock(
+  required: RequiredPermission | undefined,
+  isOpen = false,
+): jest.Mocked<Reflector> {
   return {
-    get: jest.fn().mockReturnValue(required),
+    get: jest.fn().mockImplementation((key: string) => {
+      if (key === OPEN_ENDPOINT_METADATA_KEY) return isOpen;
+      if (key === PERMISSION_METADATA_KEY) return required;
+      return undefined;
+    }),
   } as unknown as jest.Mocked<Reflector>;
 }
 
@@ -41,16 +49,23 @@ function createAuthorizationServiceMock(): jest.Mocked<AuthorizationService> {
 const principal = { id: 'user-1' } as AxisUser;
 
 describe('AuthorizationGuard', () => {
-  // Pins the current fail-open behavior: an endpoint guarded by AuthorizationGuard
-  // but missing @RequirePermission is allowed through with no authorization check
-  // at all. This is a known gap (see audit) - if it's fixed to fail-closed, this
-  // test is the one that should flip to expect a denial.
-  it('allows the request when no @RequirePermission metadata is present (fail-open)', async () => {
+  it('denies the request when neither @RequirePermission nor @OpenEndpoint metadata is present (fail-closed)', async () => {
     const reflector = createReflectorMock(undefined);
     const authorizationService = createAuthorizationServiceMock();
     const guard = new AuthorizationGuard(authorizationService, reflector);
 
-    const result = await guard.canActivate(createExecutionContext({ user: principal }));
+    await expect(
+      guard.canActivate(createExecutionContext({ user: principal })),
+    ).rejects.toThrow(ForbiddenException);
+    expect(authorizationService.isAuthorized).not.toHaveBeenCalled();
+  });
+
+  it('allows the request when @OpenEndpoint metadata is present, regardless of @RequirePermission', async () => {
+    const reflector = createReflectorMock(undefined, true);
+    const authorizationService = createAuthorizationServiceMock();
+    const guard = new AuthorizationGuard(authorizationService, reflector);
+
+    const result = await guard.canActivate(createExecutionContext({}));
 
     expect(result).toBe(true);
     expect(authorizationService.isAuthorized).not.toHaveBeenCalled();
