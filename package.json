@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c",
   "engines": {
-    "node": ">=20",
+    "node": ">=24",
     "pnpm": ">=10"
   },
   "scripts": {
@@ -22,11 +22,11 @@
     "lint": "biome lint --write .",
     "check": "biome check .",
     "check:write": "biome check --write .",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./jest-e2e.json",
+    "test": "jest --config ./jest.config.ts --detectOpenHandles",
+    "test:watch": "jest --config ./jest.config.ts --watch",
+    "test:cov": "jest --config ./jest.config.ts --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config ./jest.config.ts --runInBand",
+    "test:e2e": "jest --config ./jest-e2e.json --detectOpenHandles",
     "test:e2e:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config ./jest-e2e.json --runInBand",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "pnpm run typeorm -- migration:generate ./src/common/migration/%npm_config_name% -d ./src/common/config/data-source.ts",
@@ -46,11 +46,11 @@
     "@fastify/multipart": "^10.1.0",
     "@fastify/swagger": "^9.8.1",
     "@fastify/swagger-ui": "^6.1.0",
-    "@nestjs/common": "^11.0.20",
+    "@nestjs/common": "^11.1.2",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.0.20",
-    "@nestjs/platform-fastify": "^11.0.20",
-    "@nestjs/swagger": "^11.1.4",
+    "@nestjs/core": "^11.1.2",
+    "@nestjs/platform-fastify": "^11.1.28",
+    "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^11.0.0",
     "@pormeldev/axis-common-lib": "2.1.0",
     "@pormeldev/axis-ddd-core": "2.0.1",
@@ -79,9 +79,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.4",
-    "@nestjs/cli": "^11.0.6",
+    "@nestjs/cli": "^11.0.7",
     "@nestjs/schematics": "^11.0.5",
     "@nestjs/testing": "^11.1.6",
+    "@swc/core": "^1.15.46",
+    "@swc/jest": "^0.2.39",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.14.0",
     "@types/qs": "^6.9.18",
@@ -96,21 +98,5 @@
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.3"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "^@src/(.*)$": "<rootDir>/$1"
-    },
-    "moduleFileExtensions": ["js", "json", "ts"],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "testPathIgnorePatterns": ["\\.e2e-spec\\.ts$"],
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": ["**/*.(t|j)s"],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "setupFiles": ["<rootDir>/common/config/jest-setup-env.ts"]
   }
 }

@@ -81,6 +81,25 @@ el patrón hexagonal + CQRS de Axis, y sirve como referencia para features nueva
 > clase base de Axis (`CodedApplicationNotFoundError`, `CodedDomainError`, etc.),
 > no contra tu subclase.
 
+> Nota de implementación: `sortableFields`/`filterableFields` en un
+> `QueryValidationDefinition` (ver `get-all-government-agencies.definition.ts`)
+> van en **camelCase** (`foundedAt`, no `founded_at`), aunque el resto de la API
+> (body, `fields[...]`, la respuesta) sea snake_case. Estos dos puntualmente no
+> pasan por ningún interceptor de casing — van directo al query builder de
+> TypeORM, que resuelve contra el nombre de propiedad de la entity. Declararlos
+> en snake_case compila y valida bien, pero cualquier filtro/orden sobre ese
+> campo responde 500 recién en runtime. `selectableFields` sí tolera cualquiera
+> de los dos casings (soporta snake_case y camelCase).
+
+> Nota de implementación: el `GetAllGovernmentAgenciesUsecase` cachea su
+> resultado en Redis (`AXIS_CACHE`, ver `government-agency-cache.ts`), invalidado
+> por completo en cada write de `Create`/`Update`/`Delete`. Está acá como
+> **patrón de referencia** para features futuras con un volumen de lectura real
+> que lo justifique — `government-agencies` en sí no tiene ese volumen. No
+> repliques el cache en un módulo nuevo solo porque este ejemplo lo tiene;
+> evaluá primero si ese endpoint realmente lo necesita, dado que suma
+> invalidación a mantener en cada usecase de escritura futuro.
+
 ### Versiones Axis
 
 Las dependencias usan las versiones `latest` publicadas y completas. Al
@@ -104,7 +123,7 @@ contenido del artefacto antes de subir estas versiones.
 
 ## Requisitos
 
-- Node.js 20+ (LTS recomendado)
+- Node.js 24+ (LTS recomendado; ver `.nvmrc`)
 - pnpm 10+ (el repo fija `packageManager` en `package.json`; con Corepack habilitado, `pnpm` ya resuelve la versión correcta)
 - Docker (opcional) para levantar Postgres/Redis, o el stack completo incluida la API
 
@@ -158,6 +177,14 @@ pnpm config set "//npm.pkg.github.com/:_authToken" "$GITHUB_PAT"
 
 - `CORS_ORIGINS`: lista de orígenes permitidos separados por coma (ver `.env.example`).
 - Configurado en `app.factory.ts` vía `app.enableCors(...)`: methods explícitos, headers `Axis-User`/`Axis-Source-System`/`Axis-Request-Id`, `credentials: true`.
+
+## Autorización
+
+- Autenticación: el header `axis-user` (JSON con el usuario) se confía tal cual llega — este servicio no valida tokens, se asume que algo delante (gateway/BFF) ya autenticó y arma ese header. `RequireUserGuard`/`LocalUserGuard` (globales, de `@pormeldev/axis-nestjs-common`) exigen que el header exista, no que sea válido.
+- Autorización: `AuthorizationGuard` + `@RequirePermission(action, resourceType)` (`src/common/infrastructure/authorization/`), aplicado por controller (`@UseGuards(AuthorizationGuard)`) — no es un guard global, hay que agregarlo explícitamente en cada controller nuevo.
+  - **Sin `@RequirePermission` en un método, el guard deja pasar sin chequear nada** (fail-open). Al agregar un endpoint nuevo con `@UseGuards(AuthorizationGuard)`, no te olvides el decorator en cada método.
+- `AUTHORIZATION_PROVIDER`: `awsvp` (default en `.env.example` es `allow-all`) usa `AWSVerifiedPermissionsAuthorizationService` real (AWS Verified Permissions); `allow-all` otorga siempre acceso, sin llamar a AWS.
+  - `allow-all` solo arranca si `NODE_ENV` es `development` o `test` — cualquier otro valor (incluido `staging`, o sin setear) aborta el proceso. Pensado para que roles/permisos se prueben contra AWS Verified Permissions real en cualquier ambiente que no sea desarrollo local.
 
 ## Migraciones (TypeORM CLI)
 
@@ -266,7 +293,9 @@ curl -s \
 
 ## Testing
 
-- Framework: Jest (`@nestjs/testing`, `ts-jest`).
+- Framework: Jest. Unit tests transpilados con `@swc/jest` (`jest.config.ts` +
+  `.swcrc.test.json`, más rápido, sin type-check); e2e sigue con `ts-jest`
+  (`jest-e2e.json`).
 - Unit: specs `*.spec.ts` en una carpeta `__test__/` junto al código que testean
   (ej. `domain/value-object/__test__/mi-vo.value.spec.ts`), no sueltos al lado
   del archivo. Coincide con la convención real de `edenor-investment-backend` y

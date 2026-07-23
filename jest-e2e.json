@@ -10,5 +10,6 @@
     "^@src/(.*)$": "<rootDir>/src/$1"
   },
   "setupFiles": ["<rootDir>/src/common/config/jest-setup-env.ts"],
-  "globalSetup": "<rootDir>/src/common/config/jest-e2e-global-setup.ts"
+  "globalSetup": "<rootDir>/src/common/config/jest-e2e-global-setup.ts",
+  "forceExit": true
 }

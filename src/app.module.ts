@@ -106,8 +106,11 @@ if (missingRequiredEnvVars.length > 0) {
   process.exit(1);
 }
 
-if (authorizationProvider === 'allow-all' && process.env.NODE_ENV === 'production') {
-  console.error('❌ AUTHORIZATION_PROVIDER=allow-all is not allowed when NODE_ENV=production.');
+const allowAllPermittedEnvs = ['development', 'test'];
+if (authorizationProvider === 'allow-all' && !allowAllPermittedEnvs.includes(process.env.NODE_ENV || '')) {
+  console.error(
+    `❌ AUTHORIZATION_PROVIDER=allow-all is only allowed when NODE_ENV is one of: ${allowAllPermittedEnvs.join(', ')}.`,
+  );
   process.exit(1);
 }
 
@@ -262,11 +265,12 @@ if (
       useFactory: (cfg: ConfigService, appLogger: LoggerInterface): CacheInterface => {
         const host = cfg.get<string>('REDIS_HOST') as string;
         const port = parseInt(cfg.get<string>('REDIS_PORT') as string);
+        const password = cfg.get<string>('REDIS_PASSWORD') || undefined;
         const tls = (cfg.get<string>('REDIS_TLS') || '').toLowerCase() === 'true';
         const namespace = cfg.get<string>('CACHE_NAMESPACE') as string;
         const ttl = parseInt(cfg.get<string>('REDIS_TTL') as string);
         const logger = new RedisCacheLogPublisher(appLogger, { host, port });
-        const options: RedisOptions = { host, port, tls, namespace, ttl, logger };
+        const options: RedisOptions = { host, port, password, tls, namespace, ttl, logger };
         return new RedisCacheService(options);
       },
       inject: [ConfigService, AXIS_LOGGER],

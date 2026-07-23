@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { injectDependency } from '@pormeldev/axis-nestjs-common';
+import { AXIS_CACHE } from '@src/common';
 import { AuthorizationGuard } from '@src/common/infrastructure/authorization/authorization.guard';
 import { CreateGovernmentAgencyUsecase } from './application/command/create-government-agency/create-government-agency.usecase';
 import { DeleteGovernmentAgencyUsecase } from './application/command/delete-government-agency/delete-government-agency.usecase';
@@ -34,10 +35,10 @@ import { GovernmentAgencyRepository } from './infrastructure/out/government-agen
       provide: GOVERNMENT_AGENCY_REPOSITORY_PORT,
       useClass: GovernmentAgencyRepository,
     },
-    injectDependency(GetAllGovernmentAgenciesUsecase, [GOVERNMENT_AGENCY_QUERY_PORT]),
-    injectDependency(CreateGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT]),
-    injectDependency(UpdateGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT]),
-    injectDependency(DeleteGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT]),
+    injectDependency(GetAllGovernmentAgenciesUsecase, [GOVERNMENT_AGENCY_QUERY_PORT, AXIS_CACHE]),
+    injectDependency(CreateGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT, AXIS_CACHE]),
+    injectDependency(UpdateGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT, AXIS_CACHE]),
+    injectDependency(DeleteGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT, AXIS_CACHE]),
   ],
 })
 export class GovernmentAgencyModule {}
