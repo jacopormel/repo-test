@@ -121,7 +121,7 @@ export function buildBaseOrmConfig(
     migrations,
     migrationsRun: true,
     migrationsTableName: 'migrations',
-    maxQueryExecutionTime: 1,
+    maxQueryExecutionTime: 0.01,
     logging: typeormQueryLogs ? ['error', 'warn', 'query', 'log'] : ['error', 'warn'],
     logger: new TypeOrmAxisLogger(appLogger, {
       type,

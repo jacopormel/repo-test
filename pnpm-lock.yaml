@@ -24,23 +24,23 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       '@nestjs/common':
-        specifier: ^11.0.20
+        specifier: ^11.1.2
         version: 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/config':
         specifier: ^4.0.2
         version: 4.0.4(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
       '@nestjs/core':
-        specifier: ^11.0.20
+        specifier: ^11.1.2
         version: 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/platform-fastify':
-        specifier: ^11.0.20
+        specifier: ^11.1.28
         version: 11.1.28(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))
       '@nestjs/swagger':
-        specifier: ^11.1.4
+        specifier: ^11.2.0
         version: 11.4.6(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)
       '@nestjs/typeorm':
         specifier: ^11.0.0
-        version: 11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))
+        version: 11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))
       '@pormeldev/axis-common-lib':
         specifier: 2.1.0
         version: 2.1.0
@@ -52,16 +52,16 @@ importers:
         version: 2.0.1
       '@pormeldev/axis-module-health':
         specifier: 2.1.3
-        version: 2.1.3(f84845492cbb043e48e1953617b22032)
+        version: 2.1.3(03a23c4347e35bf7208bcfadd60bb81a)
       '@pormeldev/axis-module-logging-edenor':
         specifier: 2.0.1
         version: 2.0.1(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@pormeldev/axis-service-logger-pino@3.0.1)(@pormeldev/axis-service-logger@3.0.1)
       '@pormeldev/axis-module-users':
         specifier: 2.0.1
-        version: 2.0.1(@nestjs/platform-fastify@11.1.28(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)))(@nestjs/swagger@11.4.6(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2))(class-transformer@0.5.1)(fastify@5.10.0)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+        version: 2.0.1(@nestjs/platform-fastify@11.1.28(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)))(@nestjs/swagger@11.4.6(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2))(class-transformer@0.5.1)(fastify@5.10.0)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       '@pormeldev/axis-nestjs-common':
         specifier: 3.2.0
-        version: 3.2.0(1205f995c2ea75b866981b451d53799d)
+        version: 3.2.0(49bc66bd78ab0526055ada68b3319f38)
       '@pormeldev/axis-service-authorization':
         specifier: 2.0.0
         version: 2.0.0
@@ -79,7 +79,7 @@ importers:
         version: 2.0.1
       '@pormeldev/axis-service-database-typeorm':
         specifier: 2.0.0
-        version: 2.0.0(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))
+        version: 2.0.0(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))
       '@pormeldev/axis-service-logger':
         specifier: 3.0.1
         version: 3.0.1
@@ -112,20 +112,26 @@ importers:
         version: 7.8.2
       typeorm:
         specifier: ^0.3.27
-        version: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+        version: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.5.4
         version: 2.5.4
       '@nestjs/cli':
-        specifier: ^11.0.6
-        version: 11.0.24(@types/node@22.20.1)
+        specifier: ^11.0.7
+        version: 11.0.24(@swc/core@1.15.46)(@types/node@22.20.1)
       '@nestjs/schematics':
         specifier: ^11.0.5
         version: 11.1.0(chokidar@4.0.3)(typescript@5.9.3)
       '@nestjs/testing':
         specifier: ^11.1.6
         version: 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      '@swc/core':
+        specifier: ^1.15.46
+        version: 1.15.46
+      '@swc/jest':
+        specifier: ^0.2.39
+        version: 0.2.39(@swc/core@1.15.46)
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -140,7 +146,7 @@ importers:
         version: 6.0.3
       jest:
         specifier: ^30.2.0
-        version: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+        version: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       nodemon:
         specifier: ^3.1.10
         version: 3.1.14
@@ -149,16 +155,16 @@ importers:
         version: 7.2.2
       ts-jest:
         specifier: ^29.4.6
-        version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
+        version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3)
       ts-loader:
         specifier: ^9.5.2
-        version: 9.6.2(typescript@5.9.3)(webpack@5.106.2)
+        version: 9.6.2(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.46))
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.20.1)(typescript@5.9.3)
+        version: 10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)
       ts-node-dev:
         specifier: ^2.0.0
-        version: 2.0.0(@types/node@22.20.1)(typescript@5.9.3)
+        version: 2.0.0(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)
       tsc-alias:
         specifier: ^1.8.16
         version: 1.9.1
@@ -792,6 +798,10 @@ packages:
     peerDependenciesMeta:
       node-notifier:
         optional: true
+
+  '@jest/create-cache-key-function@30.4.1':
+    resolution: {integrity: sha512-R+xGEtzA95NIsvpXJSROG4t01956dDOt17KpamguY4XOnGvdHNFFXE7Er0C1OAsRjOwiIxpKqOvGlznIGZIQlQ==}
+    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
   '@jest/diff-sequences@30.4.0':
     resolution: {integrity: sha512-zOpzlfUs45l6u7jm39qr87JCHUDsaeCtvL+kQe/Vn9jSnRB4/5IPXISm0h9I1vZW/o00Kn4UTJ2MOlhnUGwv3g==}
@@ -1711,6 +1721,99 @@ packages:
 
   '@sqltools/formatter@1.2.5':
     resolution: {integrity: sha512-Uy0+khmZqUrUGm5dmMqVlnvufZRSK0FbYzVgp0UMstm+F5+W2/jnEEQyc9vo1ZR/E5ZI/B1WjjoTqBqwJL6Krw==}
+
+  '@swc/core-darwin-arm64@1.15.46':
+    resolution: {integrity: sha512-IsISIT22EfktVJrlvIpnAxG2u/A9aob9l99HMlx80x72WlFmFPk1V3UhkEzx86eJP8hw049KTFv/RISho2cq2Q==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@swc/core-darwin-x64@1.15.46':
+    resolution: {integrity: sha512-4Tj4ppVIPCmUMpmGFiGtyEriwLyJ+yi/US4WfBrP/ok8COGddDZXLEzQETnKyK46mjvr1v0jevrS23zjoff7vA==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@swc/core-linux-arm-gnueabihf@1.15.46':
+    resolution: {integrity: sha512-i8tUGnNjyOgMmfmgFSg4aeJLQoFyfpIHK5FjpQAwpRyQIqEUB2w1e8zIDQzY1WhOxx8NoS1S5iUL813Un4Sf5A==}
+    engines: {node: '>=10'}
+    cpu: [arm]
+    os: [linux]
+
+  '@swc/core-linux-arm64-gnu@1.15.46':
+    resolution: {integrity: sha512-c0OnhqzdhfOvv6qhNCcByepB+sNYOGZyhtr2Qa6ZCHvAWTYhSRw4j/u92Stue9PbZ/6q74b9nHzi76+kVzqQHQ==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@swc/core-linux-arm64-musl@1.15.46':
+    resolution: {integrity: sha512-imyRpNEcUzFQFV2LE4jL68ErvmKEuZCbvZru77iQREunJ+bR4i658cupTgtG1mLYM3F1Tzy3Sb9xYb02KghWTg==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@swc/core-linux-ppc64-gnu@1.15.46':
+    resolution: {integrity: sha512-ctEfcl/HcUeomK33cbySiHZm98GEDIxTm1EkpBsYCiHxElYBzvTXVeuQT2YwbUXn9XCrjiw4ipyUNk33k26qRg==}
+    engines: {node: '>=10'}
+    cpu: [ppc64]
+    os: [linux]
+
+  '@swc/core-linux-s390x-gnu@1.15.46':
+    resolution: {integrity: sha512-DxlMdnt84TtRVTv7WL/thWyz9+QU8QZNNoAP9rrk0P68LziuhfePp8MjQ44zIprpTHTsEwyziIuGUUN5iSC1bQ==}
+    engines: {node: '>=10'}
+    cpu: [s390x]
+    os: [linux]
+
+  '@swc/core-linux-x64-gnu@1.15.46':
+    resolution: {integrity: sha512-SKxI7J6t90XPl8hRUqtJi9NfGdunN/E/vZMc7Bc0figeRdOPDBT+Tm8g7cx9xM0T0mewh2l+8dewa3Am27/P+A==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@swc/core-linux-x64-musl@1.15.46':
+    resolution: {integrity: sha512-qj9T6B7bosI0VEsrWOVXZN1OXxS8Tp63ywyrLxNdOycnUtLdkgYcoBsN5y8ImnDDsnwrEWZOy1e+J4xSe7mA3Q==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@swc/core-win32-arm64-msvc@1.15.46':
+    resolution: {integrity: sha512-8p7l4c3LU+eA5g9Et1JPhNeMC1oQwXTGU+uah8DPIBX7YXzqswvaBtyKVmXefVGi/DJU1x3YJsc3mbAp9aWzSQ==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@swc/core-win32-ia32-msvc@1.15.46':
+    resolution: {integrity: sha512-tUEnfr3Bn9u6FOjUb3PN9p+09qZC2j+wNDLKHzXXZn22rqGcUqR/ohCRSS+nG9B9+X+U+3FewNEHJkTmdIvMjQ==}
+    engines: {node: '>=10'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@swc/core-win32-x64-msvc@1.15.46':
+    resolution: {integrity: sha512-Vux7UDzBJYQggSuPfcl2w9iu+IJpgpRCxHzgCaVkELnAXAE4XZMOTX9HNcaNiwfeIDqdu2rkr69RuDm6wY8neA==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@swc/core@1.15.46':
+    resolution: {integrity: sha512-Ri3em2mBpq3h2zSPliCYl63otDGqek8PPEfv2nWgRQEbZ/VBCNyypVTVQ6cEbTCXBhy+WE2T3fQb08moIyuYaw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      '@swc/helpers': '>=0.5.17'
+    peerDependenciesMeta:
+      '@swc/helpers':
+        optional: true
+
+  '@swc/counter@0.1.3':
+    resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
+
+  '@swc/jest@0.2.39':
+    resolution: {integrity: sha512-eyokjOwYd0Q8RnMHri+8/FS1HIrIUKK/sRrFp8c1dThUOfNeCWbLmBP1P5VsKdvmkd25JaH+OKYwEYiAYg9YAA==}
+    engines: {npm: '>= 7.0.0'}
+    peerDependencies:
+      '@swc/core': '*'
+
+  '@swc/types@0.1.27':
+    resolution: {integrity: sha512-K6h3iUlqeM946U4sXFYeahefR1YBbXJvko+hv8WS8/0BNJ4OHiHRywMnQUJCqkR7Y9+hqQ1TvEpiKqUhz7NEFg==}
 
   '@tediousjs/connection-string@0.5.0':
     resolution: {integrity: sha512-7qSgZbincDDDFyRweCIEvZULFAw5iz/DeunhvuxpL31nfntX3P4Yd4HkHBRg9H8CdqY1e5WFN1PZIz/REL9MVQ==}
@@ -3667,8 +3770,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-is@19.2.7:
-    resolution: {integrity: sha512-kZFnouyVv7eP/Phmrlo9FK+zcAdriZJvzxXHF1Sl1P377WSGe2G/JxVolhTrB/jeV47lKImhNUsijjHAAbcl/A==}
+  react-is@19.2.8:
+    resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
 
   readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
@@ -5256,7 +5359,7 @@ snapshots:
       jest-util: 30.4.1
       slash: 3.0.0
 
-  '@jest/core@30.4.2(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))':
+  '@jest/core@30.4.2(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))':
     dependencies:
       '@jest/console': 30.4.1
       '@jest/pattern': 30.4.0
@@ -5272,7 +5375,7 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
       jest-changed-files: 30.4.1
-      jest-config: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      jest-config: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       jest-haste-map: 30.4.1
       jest-message-util: 30.4.1
       jest-regex-util: 30.4.0
@@ -5291,6 +5394,10 @@ snapshots:
       - esbuild-register
       - supports-color
       - ts-node
+
+  '@jest/create-cache-key-function@30.4.1':
+    dependencies:
+      '@jest/types': 30.4.1
 
   '@jest/diff-sequences@30.4.0': {}
 
@@ -5471,7 +5578,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@nestjs/cli@11.0.24(@types/node@22.20.1)':
+  '@nestjs/cli@11.0.24(@swc/core@1.15.46)(@types/node@22.20.1)':
     dependencies:
       '@angular-devkit/core': 19.2.27(chokidar@4.0.3)
       '@angular-devkit/schematics': 19.2.27(chokidar@4.0.3)
@@ -5482,15 +5589,17 @@ snapshots:
       chokidar: 4.0.3
       cli-table3: 0.6.5
       commander: 4.1.1
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.106.2)
+      fork-ts-checker-webpack-plugin: 9.1.0(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.46))
       glob: 13.0.6
       node-emoji: 1.11.0
       ora: 5.4.1
       tsconfig-paths: 4.2.0
       tsconfig-paths-webpack-plugin: 4.2.0
       typescript: 5.9.3
-      webpack: 5.106.2
+      webpack: 5.106.2(@swc/core@1.15.46)
       webpack-node-externals: 3.0.0
+    optionalDependencies:
+      '@swc/core': 1.15.46
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/css'
@@ -5599,13 +5708,13 @@ snapshots:
       '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@nestjs/typeorm@11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))':
+  '@nestjs/typeorm@11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))':
     dependencies:
       '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
-      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
 
   '@noble/hashes@1.8.0': {}
 
@@ -6342,19 +6451,19 @@ snapshots:
       '@pormeldev/axis-common-lib': 2.1.0
       '@pormeldev/axis-service-logger': 3.0.1
 
-  '@pormeldev/axis-module-health@2.1.3(f84845492cbb043e48e1953617b22032)':
+  '@pormeldev/axis-module-health@2.1.3(03a23c4347e35bf7208bcfadd60bb81a)':
     dependencies:
       '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/config': 4.0.4(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
       '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/swagger': 11.4.6(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)
-      '@nestjs/typeorm': 11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))
+      '@nestjs/typeorm': 11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))
       '@pormeldev/axis-common-lib': 2.1.0
       '@pormeldev/axis-module-logging-edenor': 2.0.1(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@pormeldev/axis-service-logger-pino@3.0.1)(@pormeldev/axis-service-logger@3.0.1)
-      '@pormeldev/axis-nestjs-common': 3.2.0(1205f995c2ea75b866981b451d53799d)
+      '@pormeldev/axis-nestjs-common': 3.2.0(49bc66bd78ab0526055ada68b3319f38)
       class-transformer: 0.5.1
       fastify: 5.10.0
-      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
 
   '@pormeldev/axis-module-logging-edenor@2.0.1(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@pormeldev/axis-service-logger-pino@3.0.1)(@pormeldev/axis-service-logger@3.0.1)':
     dependencies:
@@ -6365,21 +6474,21 @@ snapshots:
       '@pormeldev/axis-service-logger-pino': 3.0.1
       rxjs: 7.8.2
 
-  '@pormeldev/axis-module-users@2.0.1(@nestjs/platform-fastify@11.1.28(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)))(@nestjs/swagger@11.4.6(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2))(class-transformer@0.5.1)(fastify@5.10.0)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))':
+  '@pormeldev/axis-module-users@2.0.1(@nestjs/platform-fastify@11.1.28(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)))(@nestjs/swagger@11.4.6(@fastify/static@9.3.0)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2))(class-transformer@0.5.1)(fastify@5.10.0)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))':
     dependencies:
       '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/config': 4.0.4(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
       '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/typeorm': 11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))
+      '@nestjs/typeorm': 11.0.3(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))
       '@pormeldev/axis-common-lib': 2.1.0
-      '@pormeldev/axis-nestjs-common': 3.0.0(85443c0e0e9c80fb4590e2f62617f218)
+      '@pormeldev/axis-nestjs-common': 3.0.0(9c1a98208993deb9285bdc6482981e12)
       '@pormeldev/axis-service-database': 2.0.0
-      '@pormeldev/axis-service-database-typeorm': 2.0.0(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))
+      '@pormeldev/axis-service-database-typeorm': 2.0.0(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))
       class-validator: 0.14.4
       mssql: 11.0.1
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
-      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@nestjs/microservices'
@@ -6406,7 +6515,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@pormeldev/axis-nestjs-common@3.0.0(85443c0e0e9c80fb4590e2f62617f218)':
+  '@pormeldev/axis-nestjs-common@3.0.0(9c1a98208993deb9285bdc6482981e12)':
     dependencies:
       '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -6417,7 +6526,7 @@ snapshots:
       class-validator: 0.14.4
       fastify: 5.10.0
       rxjs: 7.8.2
-      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@sap/hana-client'
@@ -6438,7 +6547,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@pormeldev/axis-nestjs-common@3.2.0(1205f995c2ea75b866981b451d53799d)':
+  '@pormeldev/axis-nestjs-common@3.2.0(49bc66bd78ab0526055ada68b3319f38)':
     dependencies:
       '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/config': 4.0.4(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -6457,7 +6566,7 @@ snapshots:
       class-validator: 0.14.4
       fastify: 5.10.0
       rxjs: 7.8.2
-      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
     transitivePeerDependencies:
       - '@google-cloud/spanner'
       - '@opentelemetry/core'
@@ -6499,11 +6608,11 @@ snapshots:
     dependencies:
       '@pormeldev/axis-common-lib': 2.1.0
 
-  '@pormeldev/axis-service-database-typeorm@2.0.0(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))':
+  '@pormeldev/axis-service-database-typeorm@2.0.0(typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))':
     dependencies:
       '@pormeldev/axis-common-lib': 2.1.0
       '@pormeldev/axis-service-database': 2.0.0
-      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      typeorm: 0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
 
   '@pormeldev/axis-service-database@2.0.0':
     dependencies:
@@ -6616,6 +6725,73 @@ snapshots:
       tslib: 2.8.1
 
   '@sqltools/formatter@1.2.5': {}
+
+  '@swc/core-darwin-arm64@1.15.46':
+    optional: true
+
+  '@swc/core-darwin-x64@1.15.46':
+    optional: true
+
+  '@swc/core-linux-arm-gnueabihf@1.15.46':
+    optional: true
+
+  '@swc/core-linux-arm64-gnu@1.15.46':
+    optional: true
+
+  '@swc/core-linux-arm64-musl@1.15.46':
+    optional: true
+
+  '@swc/core-linux-ppc64-gnu@1.15.46':
+    optional: true
+
+  '@swc/core-linux-s390x-gnu@1.15.46':
+    optional: true
+
+  '@swc/core-linux-x64-gnu@1.15.46':
+    optional: true
+
+  '@swc/core-linux-x64-musl@1.15.46':
+    optional: true
+
+  '@swc/core-win32-arm64-msvc@1.15.46':
+    optional: true
+
+  '@swc/core-win32-ia32-msvc@1.15.46':
+    optional: true
+
+  '@swc/core-win32-x64-msvc@1.15.46':
+    optional: true
+
+  '@swc/core@1.15.46':
+    dependencies:
+      '@swc/counter': 0.1.3
+      '@swc/types': 0.1.27
+    optionalDependencies:
+      '@swc/core-darwin-arm64': 1.15.46
+      '@swc/core-darwin-x64': 1.15.46
+      '@swc/core-linux-arm-gnueabihf': 1.15.46
+      '@swc/core-linux-arm64-gnu': 1.15.46
+      '@swc/core-linux-arm64-musl': 1.15.46
+      '@swc/core-linux-ppc64-gnu': 1.15.46
+      '@swc/core-linux-s390x-gnu': 1.15.46
+      '@swc/core-linux-x64-gnu': 1.15.46
+      '@swc/core-linux-x64-musl': 1.15.46
+      '@swc/core-win32-arm64-msvc': 1.15.46
+      '@swc/core-win32-ia32-msvc': 1.15.46
+      '@swc/core-win32-x64-msvc': 1.15.46
+
+  '@swc/counter@0.1.3': {}
+
+  '@swc/jest@0.2.39(@swc/core@1.15.46)':
+    dependencies:
+      '@jest/create-cache-key-function': 30.4.1
+      '@swc/core': 1.15.46
+      '@swc/counter': 0.1.3
+      jsonc-parser: 3.3.1
+
+  '@swc/types@0.1.27':
+    dependencies:
+      '@swc/counter': 0.1.3
 
   '@tediousjs/connection-string@0.5.0': {}
 
@@ -7594,7 +7770,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.106.2):
+  fork-ts-checker-webpack-plugin@9.1.0(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.46)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chalk: 4.1.2
@@ -7609,7 +7785,7 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.3
       typescript: 5.9.3
-      webpack: 5.106.2
+      webpack: 5.106.2(@swc/core@1.15.46)
 
   form-data@4.0.6:
     dependencies:
@@ -7955,15 +8131,15 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)):
+  jest-cli@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)):
     dependencies:
-      '@jest/core': 30.4.2(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      '@jest/core': 30.4.2(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       '@jest/test-result': 30.4.1
       '@jest/types': 30.4.1
       chalk: 4.1.2
       exit-x: 0.2.2
       import-local: 3.2.0
-      jest-config: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      jest-config: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       jest-util: 30.4.1
       jest-validate: 30.4.1
       yargs: 17.7.3
@@ -7974,7 +8150,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)):
+  jest-config@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)):
     dependencies:
       '@babel/core': 7.29.7
       '@jest/get-type': 30.1.0
@@ -8001,7 +8177,7 @@ snapshots:
       strip-json-comments: 3.1.1
     optionalDependencies:
       '@types/node': 22.20.1
-      ts-node: 10.9.2(@types/node@22.20.1)(typescript@5.9.3)
+      ts-node: 10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -8228,12 +8404,12 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)):
+  jest@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)):
     dependencies:
-      '@jest/core': 30.4.2(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      '@jest/core': 30.4.2(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       '@jest/types': 30.4.1
       import-local: 3.2.0
-      jest-cli: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      jest-cli: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -8710,7 +8886,7 @@ snapshots:
       '@jest/schemas': 30.4.1
       ansi-styles: 5.2.0
       react-is-18: react-is@18.3.1
-      react-is-19: react-is@19.2.7
+      react-is-19: react-is@19.2.8
 
   process-warning@4.0.1: {}
 
@@ -8755,7 +8931,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-is@19.2.7: {}
+  react-is@19.2.8: {}
 
   readable-stream@3.6.2:
     dependencies:
@@ -9089,13 +9265,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  terser-webpack-plugin@5.6.1(webpack@5.106.2):
+  terser-webpack-plugin@5.6.1(@swc/core@1.15.46)(webpack@5.106.2(@swc/core@1.15.46)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.49.0
-      webpack: 5.106.2
+      webpack: 5.106.2(@swc/core@1.15.46)
+    optionalDependencies:
+      '@swc/core': 1.15.46
 
   terser@5.49.0:
     dependencies:
@@ -9144,12 +9322,12 @@ snapshots:
 
   tree-kill@1.2.2: {}
 
-  ts-jest@29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
+  ts-jest@29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       handlebars: 4.7.9
-      jest: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3))
+      jest: 30.4.2(@types/node@22.20.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3))
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
@@ -9164,15 +9342,15 @@ snapshots:
       babel-jest: 30.4.1(@babel/core@7.29.7)
       jest-util: 30.4.1
 
-  ts-loader@9.6.2(typescript@5.9.3)(webpack@5.106.2):
+  ts-loader@9.6.2(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.46)):
     dependencies:
       chalk: 4.1.2
       picomatch: 4.0.5
       source-map: 0.7.6
       typescript: 5.9.3
-      webpack: 5.106.2
+      webpack: 5.106.2(@swc/core@1.15.46)
 
-  ts-node-dev@2.0.0(@types/node@22.20.1)(typescript@5.9.3):
+  ts-node-dev@2.0.0(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3):
     dependencies:
       chokidar: 3.6.0
       dynamic-dedupe: 0.3.0
@@ -9182,7 +9360,7 @@ snapshots:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 10.9.2(@types/node@22.20.1)(typescript@5.9.3)
+      ts-node: 10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)
       tsconfig: 7.0.0
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -9190,7 +9368,7 @@ snapshots:
       - '@swc/wasm'
       - '@types/node'
 
-  ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3):
+  ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.12
@@ -9207,6 +9385,8 @@ snapshots:
       typescript: 5.9.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    optionalDependencies:
+      '@swc/core': 1.15.46
 
   tsc-alias@1.9.1:
     dependencies:
@@ -9252,7 +9432,7 @@ snapshots:
       es-errors: 1.3.0
       is-typed-array: 1.1.15
 
-  typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@types/node@22.20.1)(typescript@5.9.3)):
+  typeorm@0.3.31(mssql@11.0.1)(pg@8.22.0)(redis@4.7.1)(ts-node@10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 4.3.1
@@ -9273,7 +9453,7 @@ snapshots:
       mssql: 11.0.1
       pg: 8.22.0
       redis: 4.7.1
-      ts-node: 10.9.2(@types/node@22.20.1)(typescript@5.9.3)
+      ts-node: 10.9.2(@swc/core@1.15.46)(@types/node@22.20.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -9366,7 +9546,7 @@ snapshots:
 
   webpack-sources@3.5.1: {}
 
-  webpack@5.106.2:
+  webpack@5.106.2(@swc/core@1.15.46):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.9
@@ -9389,7 +9569,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
-      terser-webpack-plugin: 5.6.1(webpack@5.106.2)
+      terser-webpack-plugin: 5.6.1(@swc/core@1.15.46)(webpack@5.106.2(@swc/core@1.15.46))
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     transitivePeerDependencies:
