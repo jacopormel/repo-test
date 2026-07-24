@@ -182,7 +182,7 @@ pnpm config set "//npm.pkg.github.com/:_authToken" "$GITHUB_PAT"
 
 - Autenticación: el header `axis-user` (JSON con el usuario) se confía tal cual llega — este servicio no valida tokens, se asume que algo delante (gateway/BFF) ya autenticó y arma ese header. `RequireUserGuard`/`LocalUserGuard` (globales, de `@pormeldev/axis-nestjs-common`) exigen que el header exista, no que sea válido.
 - Autorización: `AuthorizationGuard` + `@RequirePermission(action, resourceType)` (`src/common/infrastructure/authorization/`), aplicado por controller (`@UseGuards(AuthorizationGuard)`) — no es un guard global, hay que agregarlo explícitamente en cada controller nuevo.
-  - **Sin `@RequirePermission` en un método, el guard deja pasar sin chequear nada** (fail-open). Al agregar un endpoint nuevo con `@UseGuards(AuthorizationGuard)`, no te olvides el decorator en cada método.
+  - **Sin `@RequirePermission` ni `@OpenEndpoint` en un método, el guard rechaza la request con 403** (fail-closed, `ForbiddenException`). Al agregar un endpoint nuevo con `@UseGuards(AuthorizationGuard)`, hace falta agregar explícitamente `@RequirePermission` (o `@OpenEndpoint` si debe ser público) en cada método, o queda inaccesible.
 - `AUTHORIZATION_PROVIDER`: `awsvp` (default en `.env.example` es `allow-all`) usa `AWSVerifiedPermissionsAuthorizationService` real (AWS Verified Permissions); `allow-all` otorga siempre acceso, sin llamar a AWS.
   - `allow-all` solo arranca si `NODE_ENV` es `development` o `test` — cualquier otro valor (incluido `staging`, o sin setear) aborta el proceso. Pensado para que roles/permisos se prueben contra AWS Verified Permissions real en cualquier ambiente que no sea desarrollo local.
 
@@ -285,6 +285,7 @@ curl -s \
 
 - UI: `/api-docs`
 - Usa `APP_TITLE`, `APP_DESCRIPTION`, `APP_VERSION` desde el entorno
+- Deshabilitado automáticamente cuando `NODE_ENV=production` (ver `main.ts`): no se registra el documento ni la ruta `/api-docs`, para no exponer públicamente el detalle de rutas/DTOs de la API en ese ambiente.
 
 ## Debugging (VS Code)
 
