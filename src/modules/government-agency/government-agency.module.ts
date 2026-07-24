@@ -36,9 +36,18 @@ import { GovernmentAgencyRepository } from './infrastructure/out/government-agen
       useClass: GovernmentAgencyRepository,
     },
     injectDependency(GetAllGovernmentAgenciesUsecase, [GOVERNMENT_AGENCY_QUERY_PORT, AXIS_CACHE]),
-    injectDependency(CreateGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT, AXIS_CACHE]),
-    injectDependency(UpdateGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT, AXIS_CACHE]),
-    injectDependency(DeleteGovernmentAgencyUsecase, [GOVERNMENT_AGENCY_REPOSITORY_PORT, AXIS_CACHE]),
+    injectDependency(CreateGovernmentAgencyUsecase, [
+      GOVERNMENT_AGENCY_REPOSITORY_PORT,
+      AXIS_CACHE,
+    ]),
+    injectDependency(UpdateGovernmentAgencyUsecase, [
+      GOVERNMENT_AGENCY_REPOSITORY_PORT,
+      AXIS_CACHE,
+    ]),
+    injectDependency(DeleteGovernmentAgencyUsecase, [
+      GOVERNMENT_AGENCY_REPOSITORY_PORT,
+      AXIS_CACHE,
+    ]),
   ],
 })
 export class GovernmentAgencyModule {}
