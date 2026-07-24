@@ -3,11 +3,22 @@ onlyBuiltDependencies:
   - protobufjs
   - unrs-resolver
 
-# Distintos paquetes @pormeldev/axis-* fijan versiones exactas distintas de
-# axis-common-lib (2.0.0 / 2.0.1 / 2.1.0), sin ^. Sin este override, pnpm
-# instala copias separadas y TypeScript trata clases con campos privados
-# (Id, QueryDto, etc.) de cada copia como tipos incompatibles entre sí.
-# Forzamos una única versión compartida (2.1.0, la más nueva, backward-compatible
-# por semver) para que todo el árbol de dependencias vea la misma instancia.
+# axis-common-lib: distintos @pormeldev/axis-* fijan versiones exactas
+# distintas (2.0.0/2.0.1/2.1.0) sin ^, forzamos una sola para que TypeScript
+# no vea copias incompatibles. Se mantiene en 2.1.0 (no el último publicado)
+# porque axis-module-health@2.1.3 -sin versión más nueva- la fija como peer
+# exacta junto con axis-nestjs-common@3.2.0; priorizamos consistencia dentro
+# del ecosistema axis por sobre estar en el último de cada uno.
+#
+# El resto son parches de seguridad de `pnpm audit --prod` para paquetes que
+# SÍ son nuestros (fastify/swagger, no axis) - find-my-way, fast-uri, js-yaml.
+# Lo que llega vía @pormeldev/axis-* (@opentelemetry/*, uuid) se deja: es
+# responsabilidad de axis bumpearlo en su próximo release. @fastify/static
+# tampoco se overridea: el fix es un major que @fastify/swagger-ui no declara
+# soportar, y ya está mitigado (Swagger no se registra en producción).
 overrides:
   '@pormeldev/axis-common-lib': '2.1.0'
+  find-my-way: '^9.7.0'
+  'fast-uri@3': '^3.1.4'
+  'fast-uri@4': '^4.1.1'
+  '@nestjs/swagger>js-yaml': '5.2.2'

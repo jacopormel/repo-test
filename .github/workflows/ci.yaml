@@ -1,0 +1,106 @@
+name: Continuous Integration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+      - staging
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  context:
+    outputs:
+      ENVIRONMENT: ${{ steps.set.outputs.ENVIRONMENT }}
+    runs-on: ubuntu-slim
+    steps:
+      - name: Set Context
+        id: set
+        uses: pormeldev/pormel-github-actions/context@main
+        with:
+          BRANCH: ${{ github.base_ref || github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+
+  install:
+    needs: [ context ]
+    runs-on: ubuntu-slim
+    steps:
+      - name: Checkout code
+        uses: pormeldev/pormel-github-actions/checkout@main
+        with:
+            REF: ${{ github.head_ref }}
+
+      - name: Set up Node.js and install dependencies
+        uses: pormeldev/pormel-github-actions/node_setup@main
+        with:
+          PACKAGE_MANAGER: "pnpm"
+          INSTALL: "true"
+        env:
+          GITHUB_PAT: ${{ vars.GHA_NEW_PORMEL_TOKEN }}
+
+
+  lint:
+    needs: [install]
+    runs-on: ubuntu-slim
+    env:
+      GITHUB_PAT: ${{ vars.GHA_NEW_PORMEL_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Lint code
+        uses: pormeldev/pormel-github-actions/node_setup@main
+        with:
+          LINT: 'true'
+          INSTALL: 'true'
+          PACKAGE_MANAGER: 'pnpm'
+
+  build:
+    needs: [install]
+    runs-on: ubuntu-slim
+    env:
+      GITHUB_PAT: ${{ vars.GHA_NEW_PORMEL_TOKEN }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Build code
+        uses: pormeldev/pormel-github-actions/node_setup@main
+        with:
+          BUILD: true
+          INSTALL: true
+          PACKAGE_MANAGER: 'pnpm'
+
+  dependency_analysis:
+    needs: [build, lint]
+    runs-on: ubuntu-slim
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Run Dependency Analysis
+        uses: pormeldev/pormel-github-actions/dependency_analysis@main
+        with:
+          TOKEN: ${{ vars.GHA_NEW_PORMEL_TOKEN }}
+          INCIDENT_REPORTER_SECRET: ${{ secrets.INCIDENT_REPORTER_SECRET }}
+          AXIS_SECURITY_CORE: "true"
+
+  sonar:
+    needs: [ dependency_analysis ]
+    runs-on: ubuntu-24.04
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Run SonarQube analysis
+        uses: pormeldev/pormel-github-actions/sonar@main
+        env:
+          GITHUB_PAT: ${{ vars.GHA_NEW_PORMEL_TOKEN }}
+        with:
+          TEST: "true"
+          SONAR_TOKEN: ${{ secrets.SONAR_INTERNAL_TOKEN }}
+          PACKAGE_MANAGER: "pnpm"

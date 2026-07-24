@@ -15,6 +15,18 @@ async function bootstrap() {
 
   const app = await createAppInstance();
 
+  // Swagger UI/JSON exposes the full API surface (routes, DTOs, examples) —
+  // kept out of production so it isn't publicly reachable by default.
+  const swaggerEnabled = process.env.NODE_ENV !== 'production';
+  if (swaggerEnabled) {
+    setupSwagger(app);
+  }
+
+  await app.listen(Number(process.env.APP_PORT), '0.0.0.0');
+  return swaggerEnabled;
+}
+
+function setupSwagger(app: Awaited<ReturnType<typeof createAppInstance>>) {
   const config = new DocumentBuilder()
     .setTitle(process.env.APP_TITLE || 'API de Ejemplo')
     .setDescription(
@@ -84,13 +96,14 @@ async function bootstrap() {
   }
 
   SwaggerModule.setup('api-docs', app, document);
-  await app.listen(Number(process.env.APP_PORT), '0.0.0.0');
 }
 
 bootstrap()
-  .then(() => {
+  .then((swaggerEnabled) => {
     console.info(`Server running on port ${process.env.APP_PORT}`);
-    console.info(`Documentation Swagger http://0.0.0.0:${process.env.APP_PORT}/api-docs`);
+    if (swaggerEnabled) {
+      console.info(`Documentation Swagger http://0.0.0.0:${process.env.APP_PORT}/api-docs`);
+    }
   })
   .catch((error: unknown) => {
     console.error('❌ Failed to start application', error);

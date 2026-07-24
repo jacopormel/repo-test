@@ -6,6 +6,10 @@ settings:
 
 overrides:
   '@pormeldev/axis-common-lib': 2.1.0
+  find-my-way: ^9.7.0
+  fast-uri@3: ^3.1.4
+  fast-uri@4: ^4.1.1
+  '@nestjs/swagger>js-yaml': 5.2.2
 
 importers:
 
@@ -69,11 +73,11 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       '@pormeldev/axis-service-cache':
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 2.2.0
+        version: 2.2.0
       '@pormeldev/axis-service-cache-redis':
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 2.2.0
+        version: 2.2.0
       '@pormeldev/axis-service-database':
         specifier: 2.0.1
         version: 2.0.1
@@ -102,8 +106,8 @@ importers:
         specifier: 8.22.0
         version: 8.22.0
       qs:
-        specifier: 6.14.1
-        version: 6.14.1
+        specifier: 6.15.3
+        version: 6.15.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -1604,11 +1608,11 @@ packages:
   '@pormeldev/axis-service-authorization@2.0.0':
     resolution: {integrity: sha512-OPg0X3hgK8nDtkvLViQTKEmjJDYDyXOb9rkMinv4xAlf0sf7N5V+2jByimBBmBKaQu9oc64plPFLVNl/Ofn8IA==, tarball: https://npm.pkg.github.com/download/@pormeldev/axis-service-authorization/2.0.0/e53800b8bdb505f661300c294cdf657b67aead7e}
 
-  '@pormeldev/axis-service-cache-redis@2.1.0':
-    resolution: {integrity: sha512-3EmqLSA6/eizP+IJapFIAbS/fM/w71ximf2ZlE2lajDPr0xYxBYjtycfhopntSSzki1LlJBm0t+KYKI8T1zOHA==, tarball: https://npm.pkg.github.com/download/@pormeldev/axis-service-cache-redis/2.1.0/ccfd75d4ae89542835644954f1e2629068890034}
+  '@pormeldev/axis-service-cache-redis@2.2.0':
+    resolution: {integrity: sha512-yWCT+j5vK/p0OdtsCRjLn2zjmkFI/uAkon1SsFPaMzWL49nkzPx+46GPFRjkiiHbbh7bZKipu/m6lvm8KwwvKA==, tarball: https://npm.pkg.github.com/download/@pormeldev/axis-service-cache-redis/2.2.0/5c0a677700f13583d288f812d67f1eb63b3cd269}
 
-  '@pormeldev/axis-service-cache@2.1.0':
-    resolution: {integrity: sha512-s3tHCLu/EjTxi6u5lDh3T904H99ofjnB81YSr2s1zVj9Dl9zFr48IOi7EX2eqULbGseBDcomGPwA6077aSHqpw==, tarball: https://npm.pkg.github.com/download/@pormeldev/axis-service-cache/2.1.0/54540ac61a8f87e6ab8d382837e32f361980ecdf}
+  '@pormeldev/axis-service-cache@2.2.0':
+    resolution: {integrity: sha512-u1FPBWMLXPiVgByBuvWmbRhuikUjqW+JNuqYPVFD7p7sd9I6lzt0g+ckp4IZz7mhss/j6DrNZHVGuB426eIpfw==, tarball: https://npm.pkg.github.com/download/@pormeldev/axis-service-cache/2.2.0/d2d1fc37f6c25eb26eb66155b5cd583e4c339a4d}
 
   '@pormeldev/axis-service-database-typeorm@2.0.0':
     resolution: {integrity: sha512-wcyEy53VCY0+cnG1qISL3gmTr+DVRP+zj/pkd6UsVItYkAFMvyUcuCxHOx2K2cULgTkRomrLucmRyN3IZ0UeMg==, tarball: https://npm.pkg.github.com/download/@pormeldev/axis-service-database-typeorm/2.0.0/a23dd216a3eb5c776646064c11096defba1a77e6}
@@ -2748,11 +2752,11 @@ packages:
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
 
-  fast-uri@3.1.3:
-    resolution: {integrity: sha512-i70LwGWUduXqzicKXWshooq+sWL1K3WUU5rKZNG/0i3a1OSoX3HqhH5WbWwTmqWfor4urUakGPiRQcleRZTwOg==}
+  fast-uri@3.1.4:
+    resolution: {integrity: sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==}
 
-  fast-uri@4.1.0:
-    resolution: {integrity: sha512-ZodJ2cRiLVWGi9IgPb3mbgSqM4CD3LexCHkuv0FfBXHJI1ADfucTD06m6clO2Cy5RZYsw/SiCVl/dyrFI/SYWA==}
+  fast-uri@4.1.1:
+    resolution: {integrity: sha512-YPOs1zD5TG2+EZt+r88LwF6mclA7TPkpwMP7ZN3TO2HiHS8TXvq7QA/17iJsV9dubcLo/f8eEYqMBruyQV21hQ==}
 
   fastify-plugin@5.1.0:
     resolution: {integrity: sha512-FAIDA8eovSt5qcDgcBvDuX/v0Cjz0ohGhENZ/wpc3y+oZCY2afZ9Baqql3g/lC+OHRnciQol4ww7tuthOb9idw==}
@@ -2781,8 +2785,8 @@ packages:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
 
-  find-my-way@9.6.0:
-    resolution: {integrity: sha512-Zf4Xve4RymLl7NgaavNebZ01joJ8MfVerOG43wy7SHLO+r+K0C6d/SE0BiR7AV5V1VOCFlOP7ecdo+I4qmiHrQ==}
+  find-my-way@9.7.0:
+    resolution: {integrity: sha512-f2JHn75x2JlwUwLenZypgczR7YWMb/uO9BvUXtus+JMgkbIkLADd38cI4EiV+OQqrGo1Zlq6V8wnqMJ8e62wUQ==}
     engines: {node: '>=20'}
 
   find-up@4.1.0:
@@ -3255,8 +3259,8 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
-  js-yaml@5.2.1:
-    resolution: {integrity: sha512-zfLtNfQqxVqq3uaTqSkh4x4hZw3KHobGUA0fJUj4wawW8bsQLTVqpHdXSIzidh7o+4lEW36tANuAGdaFx6Zgnw==}
+  js-yaml@5.2.2:
+    resolution: {integrity: sha512-dayzUzKkJ1MkuUtZglSebU43utNXH0OWQByK9rKOOuYIO8M5TV1y+n8ALMdG0rdzBnfNkOmZEqrURepb0ejqBw==}
     hasBin: true
 
   jsesc@3.1.0:
@@ -3753,8 +3757,8 @@ packages:
   pure-rand@7.0.1:
     resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
 
-  qs@6.14.1:
-    resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
+  qs@6.15.3:
+    resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
     engines: {node: '>=0.6'}
 
   queue-lit@1.5.2:
@@ -5103,7 +5107,7 @@ snapshots:
     dependencies:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
-      fast-uri: 3.1.3
+      fast-uri: 3.1.4
 
   '@fastify/busboy@3.2.0': {}
 
@@ -5667,7 +5671,7 @@ snapshots:
       fast-querystring: 1.1.2
       fastify: 5.10.0
       fastify-plugin: 6.0.0
-      find-my-way: 9.6.0
+      find-my-way: 9.7.0
       light-my-request: 6.6.0
       path-to-regexp: 8.4.2
       reusify: 1.1.0
@@ -5692,7 +5696,7 @@ snapshots:
       '@nestjs/common': 11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/mapped-types': 2.1.1(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)
-      js-yaml: 5.2.1
+      js-yaml: 5.2.2
       lodash: 4.18.1
       path-to-regexp: 8.4.2
       reflect-metadata: 0.2.2
@@ -6598,13 +6602,13 @@ snapshots:
     dependencies:
       '@pormeldev/axis-common-lib': 2.1.0
 
-  '@pormeldev/axis-service-cache-redis@2.1.0':
+  '@pormeldev/axis-service-cache-redis@2.2.0':
     dependencies:
       '@pormeldev/axis-common-lib': 2.1.0
-      '@pormeldev/axis-service-cache': 2.1.0
+      '@pormeldev/axis-service-cache': 2.2.0
       redis: 4.7.1
 
-  '@pormeldev/axis-service-cache@2.1.0':
+  '@pormeldev/axis-service-cache@2.2.0':
     dependencies:
       '@pormeldev/axis-common-lib': 2.1.0
 
@@ -7152,14 +7156,14 @@ snapshots:
   ajv@8.18.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.3
+      fast-uri: 3.1.4
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.3
+      fast-uri: 3.1.4
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -7688,7 +7692,7 @@ snapshots:
       '@fastify/merge-json-schemas': 0.2.1
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
-      fast-uri: 4.1.0
+      fast-uri: 4.1.1
       json-schema-ref-resolver: 3.0.0
       rfdc: 1.4.1
 
@@ -7698,9 +7702,9 @@ snapshots:
 
   fast-safe-stringify@2.1.1: {}
 
-  fast-uri@3.1.3: {}
+  fast-uri@3.1.4: {}
 
-  fast-uri@4.1.0: {}
+  fast-uri@4.1.1: {}
 
   fastify-plugin@5.1.0: {}
 
@@ -7715,7 +7719,7 @@ snapshots:
       abstract-logging: 2.0.1
       avvio: 9.3.0
       fast-json-stringify: 7.0.1
-      find-my-way: 9.6.0
+      find-my-way: 9.7.0
       light-my-request: 6.6.0
       pino: 10.3.1
       process-warning: 5.0.0
@@ -7750,7 +7754,7 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  find-my-way@9.6.0:
+  find-my-way@9.7.0:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-querystring: 1.1.2
@@ -8432,7 +8436,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  js-yaml@5.2.1:
+  js-yaml@5.2.2:
     dependencies:
       argparse: 2.0.1
 
@@ -8451,7 +8455,7 @@ snapshots:
   json-schema-resolver@3.0.0:
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
-      fast-uri: 3.1.3
+      fast-uri: 3.1.4
       rfdc: 1.4.1
     transitivePeerDependencies:
       - supports-color
@@ -8919,8 +8923,9 @@ snapshots:
 
   pure-rand@7.0.1: {}
 
-  qs@6.14.1:
+  qs@6.15.3:
     dependencies:
+      es-define-property: 1.0.1
       side-channel: 1.1.1
 
   queue-lit@1.5.2: {}
@@ -9210,7 +9215,7 @@ snapshots:
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.14.1
+      qs: 6.15.3
     transitivePeerDependencies:
       - supports-color
 
